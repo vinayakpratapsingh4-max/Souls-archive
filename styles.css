@@ -415,3 +415,93 @@
     padding: 12px;
   }
 }
+
+/* ===== SOULS.ARCHIVE NAVY GLASS CARD EFFECT ===== */
+
+.game-card {
+  position: relative;
+  overflow: hidden;
+  background: #101c2b;
+  border: 1px solid rgba(91, 125, 163, 0.35);
+  transition:
+    transform 0.5s cubic-bezier(.2,.8,.2,1),
+    border-color 0.5s,
+    box-shadow 0.5s;
+}
+
+.game-card > img {
+  transition:
+    transform 0.9s cubic-bezier(.2,.7,.2,1),
+    filter 0.7s;
+  filter: brightness(0.72);
+  transform: scale(1.08);
+}
+
+.game-card-body {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 9px;
+  padding: 15px;
+  border: 1px solid rgba(151, 184, 219, 0.22);
+  border-radius: 10px;
+  background: rgba(10, 24, 41, 0.76);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    background 0.5s,
+    border-color 0.5s,
+    padding 0.5s;
+}
+
+.game-meta {
+  color: #a9c2dc;
+}
+
+.game-name {
+  color: #edf3fa;
+}
+
+.game-difficulty,
+.game-open {
+  color: #bdcbd9;
+}
+
+.game-card:hover,
+.game-card:focus-visible {
+  transform: translateY(-5px);
+  border-color: #759bc2;
+  box-shadow:
+    0 16px 35px rgba(0,0,0,.45),
+    0 0 20px rgba(66,107,152,.18);
+  outline: none;
+}
+
+.game-card:hover > img,
+.game-card:focus-visible > img {
+  transform: scale(1);
+  filter: brightness(1);
+}
+
+.game-card:hover .game-card-body,
+.game-card:focus-visible .game-card-body {
+  background: rgba(9, 21, 35, 0.58);
+  border-color: rgba(151,184,219,.45);
+}
+
+.game-card:active {
+  transform: scale(.98);
+}
+
+/* Mobile touch-and-hold reveal */
+@media (hover: none) {
+  .game-card:active > img {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  .game-card:active .game-card-body {
+    background: rgba(9, 21, 35, 0.58);
+  }
+}
+
