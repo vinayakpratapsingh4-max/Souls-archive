@@ -265,7 +265,20 @@ function openGame(id) {
   </div>
 </section>
 
-    <button class="save-button" id="save-game">
+<section class="detail-section">
+  <h3>STEAM ACHIEVEMENTS</h3>
+  <div class="price-box">
+    <p>Discover challenges and milestones for this game.</p>
+    <a class="steam-store-button"
+       href="${steamAppIds[id] ? `https://steamcommunity.com/stats/${steamAppIds[id]}/achievements/` : '#'}"
+       target="_blank"
+       rel="noopener noreferrer">
+      ${steamAppIds[id] ? "VIEW ACHIEVEMENTS ↗" : "STEAM ACHIEVEMENTS UNAVAILABLE"}
+    </a>
+  </div>
+</section>
+
+<button class="save-button" id="save-game">
       ${saved ? "♥ REMOVE FROM WISHLIST" : "♡ ADD TO WISHLIST"}
     </button>
 
