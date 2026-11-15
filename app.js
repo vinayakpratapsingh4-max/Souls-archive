@@ -93,7 +93,7 @@ function openGame(id) {
   const game = games.find(g => g.id === id);
   if (!game) return;
 
-  const details = gameDetails[id] || {};
+  const details = (typeof gameDetails !== "undefined" && gameDetails[id]) || {};
   const saved = wishlist.includes(id);
 
   $("game-detail").innerHTML = `
