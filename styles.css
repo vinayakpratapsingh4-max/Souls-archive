@@ -550,3 +550,66 @@
 .complete-button:active {
   transform: scale(.98);
 }
+/* ===== HALL OF LEGENDS ===== */
+
+#rankings-page .panel {
+  background: linear-gradient(145deg, #202b21, #101711);
+  border: 1px solid rgba(197,165,109,.35);
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,.25);
+}
+
+#rankings-page #player-rank {
+  color: #d5c49b;
+  font-size: 28px;
+  letter-spacing: 4px;
+  margin: 12px 0;
+  text-shadow: 0 0 18px rgba(197,165,109,.25);
+}
+
+#rankings-page .section-heading {
+  margin-top: 38px;
+}
+
+#rankings-page #completed-games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+#rankings-page #completed-games .panel {
+  margin: 0;
+  transition: .3s ease;
+}
+
+#rankings-page #completed-games .panel:hover {
+  border-color: #c5a56d;
+  transform: translateY(-3px);
+}
+
+#rankings-page #achievement-list .panel {
+  position: relative;
+  overflow: hidden;
+  border-left: 3px solid #c5a56d;
+}
+
+#rankings-page #achievement-list h3 {
+  color: #d5c49b;
+  letter-spacing: 2px;
+  margin: 10px 0;
+}
+
+#rankings-page .eyebrow {
+  color: #b99b65;
+}
+
+@media(max-width:600px) {
+  #rankings-page #player-rank {
+    font-size: 23px;
+  }
+
+  #rankings-page #completed-games {
+    grid-template-columns: 1fr;
+  }
+}
