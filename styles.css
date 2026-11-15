@@ -512,13 +512,12 @@
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  background-attachment: fixed;
 }
 
-/* Mobile */
 @media (max-width: 600px) {
   #home-page {
-    padding: 16px 14px 30px;
+    background-attachment: fixed;
     background-position: 85% center;
     background-size: cover;
   }
