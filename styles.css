@@ -497,25 +497,25 @@
 #home-page {
   position: relative;
   isolation: isolate;
-  background:
+  background-color: transparent !important;
+  background-image:
     linear-gradient(
-      rgba(10, 17, 22, .48),
-      rgba(10, 17, 22, .78)
+      rgba(10, 17, 22, .30),
+      rgba(10, 17, 22, .55)
     ),
-    url("./site-background.jpg") center center / cover fixed no-repeat;
+    url("./site-background.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 
-/* Keep page content above the background */
-#home-page > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Mobile: show the RIGHT side */
+/* Mobile background */
 @media (max-width: 600px) {
   #home-page {
     background-attachment: scroll;
-    background-position: right center;
-    background-size: cover;
+    background-position: 85% center;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
   }
 }
