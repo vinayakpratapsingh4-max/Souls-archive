@@ -522,3 +522,31 @@
     background-size: cover;
   }
 }
+/* SOULS COMPLETION BUTTON */
+.complete-button {
+  width: 100%;
+  padding: 17px 20px;
+  margin: 18px 0;
+  background: linear-gradient(135deg, #1b241c, #101711);
+  color: #d5c49b;
+  border: 1px solid #927747;
+  outline: 1px solid rgba(197,165,109,.15);
+  outline-offset: -5px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: .35s ease;
+}
+
+.complete-button:hover {
+  background: #293629;
+  border-color: #d5c49b;
+  box-shadow: 0 0 22px #c5a56d33;
+  letter-spacing: 4px;
+}
+
+.complete-button:active {
+  transform: scale(.98);
+}
