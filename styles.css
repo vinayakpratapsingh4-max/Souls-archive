@@ -291,4 +291,108 @@
 .steam-unavailable {
   color: #c2b7a4;
 }
+/* ===== SOULS.ARCHIVE WINTER INTRO ===== */
+
+#intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(7, 13, 19, .48), rgba(5, 10, 15, .85)),
+    url("https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=2000&q=90")
+    center/cover;
+  color: #e8e8e4;
+  text-align: center;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
+  animation: introReveal 2s ease both;
+}
+
+.intro-eyebrow {
+  color: #a9bac5;
+  letter-spacing: 6px;
+  font-size: 11px;
+  margin-bottom: 24px;
+}
+
+.intro-content h1 {
+  font-family: Cinzel, serif;
+  font-size: clamp(38px, 9vw, 76px);
+  letter-spacing: 4px;
+  margin: 0;
+  text-shadow: 0 0 35px #9bb5c9;
+}
+
+.intro-content h1 span {
+  color: #b7c9d5;
+}
+
+.intro-subtitle {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: #aab6bd;
+  margin: 18px 0 42px;
+}
+
+#enter-archive {
+  padding: 17px 30px;
+  border: 1px solid #9cabb5;
+  background: rgba(12, 22, 30, .65);
+  color: #e7edf0;
+  font-family: Cinzel, serif;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: .4s;
+}
+
+#enter-archive span {
+  margin-left: 15px;
+}
+
+#enter-archive:hover {
+  background: #c5d2dc;
+  color: #101820;
+  box-shadow: 0 0 30px #9bb5c966;
+}
+
+.intro-footer {
+  position: absolute;
+  bottom: 25px;
+  color: #87949c;
+  font-size: 9px;
+  letter-spacing: 4px;
+}
+
+.intro-snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white 99%, transparent),
+    radial-gradient(2px 2px at 70% 60%, white 99%, transparent),
+    radial-gradient(3px 3px at 40% 80%, white 99%, transparent),
+    radial-gradient(2px 2px at 85% 15%, white 99%, transparent);
+  background-size: 180px 180px;
+  opacity: .55;
+  animation: snowFall 12s linear infinite;
+}
+
+@keyframes snowFall {
+  from { background-position: 0 0; }
+  to { background-position: 80px 500px; }
+}
+
+@keyframes introReveal {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
