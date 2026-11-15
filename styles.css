@@ -492,3 +492,30 @@
   }
 }
 
+/* ===== MAIN PAGE BACKGROUND ===== */
+
+#home-page {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      rgba(10, 17, 22, .48),
+      rgba(10, 17, 22, .78)
+    ),
+    url("./site-background.jpg") center center / cover fixed no-repeat;
+}
+
+/* Keep page content above the background */
+#home-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile: show the RIGHT side */
+@media (max-width: 600px) {
+  #home-page {
+    background-attachment: scroll;
+    background-position: right center;
+    background-size: cover;
+  }
+}
