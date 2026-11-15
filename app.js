@@ -8,9 +8,8 @@ const games = [
 
   {id:4,name:"Dark Souls III",genre:"Souls",year:2016,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PS4","Xbox One"],description:"A fading kingdom, powerful lords and a haunting dark fantasy adventure.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/374320/header.jpg",featured:true},
 
-  {id:5,name:"Demon's Souls",genre:"Souls",year:2009,studio:"FromSoftware / Bluepoint Games",difficulty:"Very hard",platforms:["PS3","PS5"],description:"Return to Boletaria and face the ancient evil hidden beyond the fog.",image:"https://www.playstation.com/en-in/games/demons-souls/",featured:true},
-
-  {id:6,name:"Bloodborne",genre:"Souls",year:2015,studio:"FromSoftware",difficulty:"Hard",platforms:["PS4"],description:"Explore the gothic city of Yharnam and uncover its terrifying secrets.",image:"https://www.playstation.com/en-us/games/bloodborne/",featured:true},
+  {id:5,name:"Demon's Souls",genre:"Souls",year:2009,studio:"FromSoftware / Bluepoint Games",difficulty:"Very hard",platforms:["PS3","PS5"],description:"Return to Boletaria and face the ancient evil hidden beyond the fog.",image:"https://gmedia.playstation.com/is/image/SIEPDC/demons-soul-hero-02-ps5-en-19aug20?$1600px$",featured:true},
+  {id:6,name:"Bloodborne",genre:"Souls",year:2015,studio:"FromSoftware",difficulty:"Hard",platforms:["PS4"],description:"Explore the gothic city of Yharnam and uncover its terrifying secrets.",image:"https://image.api.playstation.com/vulcan/img/rnd/202010/2614/O2Z66UWrZH8zcejxopwWxhGu.png?w=1920",featured:true},
 
   {id:7,name:"Sekiro: Shadows Die Twice",genre:"Souls",year:2019,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PS4","Xbox One"],description:"A shinobi's journey built around precision, timing and intense combat.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/814380/header.jpg",featured:true},
 
