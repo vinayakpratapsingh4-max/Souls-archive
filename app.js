@@ -209,14 +209,12 @@ function openGame(id) {
       </p>
     </section>
 
-    <section class="detail-section">
-      <h3>PRICE & OFFERS</h3>
-      <div class="price-box">
-        Store price
-        <strong>Not connected yet</strong>
-        <span class="subtle">Live regional pricing will be added in a future update.</span>
-      </div>
-    </section>
+<section class="detail-section">
+  <h3>STEAM STORE</h3>
+  <div class="price-box" id="steam-price">
+    Loading Steam price...
+  </div>
+</section>
 
     <button class="save-button" id="save-game">
       ${saved ? "♥ REMOVE FROM WISHLIST" : "♡ ADD TO WISHLIST"}
