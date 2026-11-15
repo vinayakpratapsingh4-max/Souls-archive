@@ -118,76 +118,45 @@ function gameCard(game){
   </article>`;
 }
 
+
 async function animateCardOpen(card, gameId) {
-  const rect = card.getBoundingClientRect();
+  const curtain = document.createElement("div");
 
-  // Fallback for browsers without animation support
-  if (!card.animate) {
-    openGame(gameId);
-    return;
-  }
-
-  const overlay = document.createElement("div");
-  overlay.style.cssText = `
+  curtain.style.cssText = `
     position: fixed;
     inset: 0;
-    z-index: 99998;
-    background: rgba(3, 9, 16, .88);
-    opacity: 1;
+    z-index: 999999;
+    background: #07111e;
+    opacity: 0;
+    pointer-events: auto;
+    transition: opacity 350ms ease;
   `;
 
-  const clone = card.cloneNode(true);
+  document.body.appendChild(curtain);
 
-  clone.style.cssText += `
-    position: fixed;
-    top: ${rect.top}px;
-    left: ${rect.left}px;
-    width: ${rect.width}px;
-    height: ${rect.height}px;
-    margin: 0;
-    z-index: 99999;
-    transform-origin: top left;
-    pointer-events: none;
-  `;
-
-  document.body.appendChild(overlay);
-  document.body.appendChild(clone);
-
-  const scaleX = window.innerWidth / rect.width;
-  const scaleY = window.innerHeight / rect.height;
-
-  const expansion = clone.animate([
-    { transform: "translate(0, 0) scale(1)" },
-    {
-      transform: `translate(${-rect.left}px, ${-rect.top}px) scale(${scaleX}, ${scaleY})`
-    }
-  ], {
-    duration: 800,
-    easing: "cubic-bezier(.22, 1, .36, 1)",
-    fill: "forwards"
+  // Fade the current page to darkness
+  requestAnimationFrame(() => {
+    curtain.style.opacity = "1";
   });
 
-  try {
-    await expansion.finished;
-  } catch (error) {}
+  await new Promise(resolve => setTimeout(resolve, 370));
 
+  // Open the selected game's detail page
   openGame(gameId);
 
-  clone.animate(
-    [{ opacity: 1 }, { opacity: 0 }],
-    { duration: 300, easing: "ease-out", fill: "forwards" }
-  );
+  // Reveal the new page smoothly
+  curtain.style.transition = "opacity 700ms ease-in-out";
+  curtain.style.pointerEvents = "none";
 
-  overlay.animate(
-    [{ opacity: 1 }, { opacity: 0 }],
-    { duration: 300, fill: "forwards" }
-  );
+  requestAnimationFrame(() => {
+    curtain.style.opacity = "0";
+  });
 
-  await new Promise(resolve => setTimeout(resolve, 320));
-
-  clone.remove();
-  overlay.remove();
+  setTimeout(() => {
+    curtain.remove();
+  }, 750);
 }
+
 
 function bindCards(root){
   root.querySelectorAll("[data-game]").forEach(card=>{
