@@ -124,17 +124,79 @@ function completeGame(id) {
     return;
   }
 
-  completedGames.push(id);
+  const game = games.find(g => g.id === id);
+  if (!game) return;
 
+  const titles = {
+    1: "ELDEN LORD",
+    2: "LORD OF THE DARK",
+    3: "THRONE SEEKER",
+    4: "LORD OF CINDER",
+    5: "SLAYER OF DEMONS",
+    6: "HUNTER OF NIGHT",
+    7: "MASTER OF DEFLECTION",
+    8: "RUBICON LIBERATOR",
+    9: "DESTINED ONE",
+    10: "A REAL BOY",
+    11: "BEARER OF THE LAMP",
+    12: "YOKAI SLAYER",
+    13: "DRAGON WARRIOR",
+    14: "KNIGHT OF HALLOWNEST",
+    15: "PHARLOOM'S FINEST",
+    16: "TAOPUNK ASCENDANT"
+  };
+
+  completedGames.push(id);
   localStorage.setItem(
     "soulsArchiveCompleted",
     JSON.stringify(completedGames)
   );
 
-  const game = games.find(g => g.id === id);
+  const popup = document.createElement("div");
+  popup.id = "achievement-popup";
 
-  notify("🏆 " + game.name + " completed!");
-  openGame(id);
+  popup.innerHTML = `
+    <div style="
+      position:relative;
+      width:min(90%,420px);
+      padding:35px 22px;
+      text-align:center;
+      background:linear-gradient(#101711ee,#080d09f5),
+      url('${game.image}') center/cover;
+      border:1px solid #c5a56d;
+      box-shadow:0 0 45px #c5a56d44;
+    ">
+      <div style="font-size:34px;margin-bottom:12px">🏆</div>
+      <p style="color:#c5a56d;letter-spacing:4px;font-size:11px">
+        ACHIEVEMENT UNLOCKED
+      </p>
+      <h2 style="color:#e8e2cf;letter-spacing:2px">
+        ${titles[id] || "ASHEN VICTORY"}
+      </h2>
+      <p style="color:#a19f8a">${game.name}</p>
+      <button id="close-achievement" style="
+        margin-top:20px;padding:12px 25px;
+        background:#c5a56d;color:#101711;
+        border:0;letter-spacing:2px;font-weight:bold;
+      ">CONTINUE</button>
+    </div>
+  `;
+
+  popup.style.cssText = `
+    position:fixed;inset:0;z-index:1000000;
+    display:flex;align-items:center;justify-content:center;
+    background:#000c;opacity:0;
+    transition:opacity .5s ease;
+  `;
+
+  document.body.appendChild(popup);
+  requestAnimationFrame(() => popup.style.opacity = "1");
+
+  document.getElementById("close-achievement").onclick = () => {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.remove(), 500);
+    openGame(id);
+  };
 }
 
 
