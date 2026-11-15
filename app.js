@@ -225,7 +225,99 @@ if (audioContext) {
     openGame(id);
   };
 }
+function renderRankings() {
+  const count = completedGames.length;
 
+  const ranks = [
+    { name: "Unranked", min: 0 },
+    { name: "Ashen One", min: 1 },
+    { name: "Hollow", min: 3 },
+    { name: "Hunter", min: 6 },
+    { name: "Elden Lord", min: 10 },
+    { name: "Lord of Cinder", min: 14 }
+  ];
+
+  let current = ranks[0];
+  let next = null;
+
+  for (let i = 0; i < ranks.length; i++) {
+    if (count >= ranks[i].min) current = ranks[i];
+    else {
+      next = ranks[i];
+      break;
+    }
+  }
+
+  $("player-rank").textContent = current.name.toUpperCase();
+
+  $("rank-progress").textContent = next
+    ? `${count} / ${next.min} games completed · ${next.min - count} more to ${next.name}`
+    : "You have reached the highest rank.";
+
+  $("rank-progress-bar").style.cssText = `
+    height:5px;
+    margin-top:15px;
+    background:#394638;
+    width:100%;
+    position:relative;
+  `;
+
+  $("rank-progress-bar").innerHTML = `
+    <div style="
+      height:100%;
+      width:${next ? Math.min(100, count / next.min * 100) : 100}%;
+      background:#c5a56d;
+      transition:width .5s;
+    "></div>
+  `;
+
+  $("completed-count").textContent = count;
+  $("achievement-count").textContent = count;
+
+  $("completed-games").innerHTML = completedGames.map(id => {
+    const game = games.find(g => g.id === id);
+    return game ? `
+      <div class="panel">
+        <strong>${game.name}</strong>
+        <p class="subtle">✓ COMPLETED</p>
+      </div>
+    ` : "";
+  }).join("");
+
+  const titles = {
+    1:"ELDEN LORD",
+    2:"LORD OF THE DARK",
+    3:"THRONE SEEKER",
+    4:"LORD OF CINDER",
+    5:"SLAYER OF DEMONS",
+    6:"HUNTER OF NIGHT",
+    7:"MASTER OF DEFLECTION",
+    8:"RUBICON LIBERATOR",
+    9:"DESTINED ONE",
+    10:"A REAL BOY",
+    11:"BEARER OF THE LAMP",
+    12:"YOKAI SLAYER",
+    13:"DRAGON WARRIOR",
+    14:"KNIGHT OF HALLOWNEST",
+    15:"PHARLOOM'S FINEST",
+    16:"TAOPUNK ASCENDANT"
+  };
+
+  $("achievement-list").innerHTML = completedGames.map(id => {
+    const game = games.find(g => g.id === id);
+    if (!game) return "";
+
+    return `
+      <div class="panel" style="margin-bottom:12px">
+        <p class="eyebrow">🏆 ACHIEVEMENT UNLOCKED</p>
+        <h3>${titles[id] || "ASHEN VICTORY"}</h3>
+        <p class="subtle">${game.name}</p>
+      </div>
+    `;
+  }).join("");
+
+  $("achievement-empty").hidden = count > 0;
+}
 
 
 function gameCard(game){
@@ -311,9 +403,15 @@ function saveWishlist(){
 }
 function showPage(pageId){
   document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!==pageId);
-  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId));
-  if(pageId==="wishlist-page")renderWishlist();
-  if(pageId==="devices-page")renderDevices();
+
+  document.querySelectorAll(".nav-item").forEach(b=>
+    b.classList.toggle("active",b.dataset.page===pageId)
+  );
+
+  if(pageId==="wishlist-page") renderWishlist();
+  if(pageId==="devices-page") renderDevices();
+  if(pageId==="rankings-page") renderRankings();
+
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function notify(message){
