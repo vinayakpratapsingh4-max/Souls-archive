@@ -404,4 +404,14 @@
   transform: scale(1.12);
   pointer-events: none;
 }
+@media (max-width: 480px) {
+  .intro-content h1 {
+    font-size: 32px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
 
+  .intro-content {
+    padding: 12px;
+  }
+}
