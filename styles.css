@@ -613,3 +613,20 @@
     grid-template-columns: 1fr;
   }
 }
+.rank-symbol {
+  display: inline-block;
+  margin-left: 10px;
+  color: #d5b777;
+  font-size: 1.15em;
+  text-shadow: 0 0 15px #c5a56d88;
+  vertical-align: middle;
+  animation: rankGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes rankGlow {
+  from { opacity: .65; }
+  to {
+    opacity: 1;
+    text-shadow: 0 0 22px #c5a56d;
+  }
+}
