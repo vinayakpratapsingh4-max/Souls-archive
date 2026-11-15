@@ -745,7 +745,7 @@
     padding-top: 30px;
   }
 }
-/* ===== MOBILE SCROLL & BACKGROUND FIX ===== */
+/* ===== MOBILE HEADER & WALLPAPER FIX ===== */
 @media (max-width: 700px) {
 
   .topbar {
@@ -759,7 +759,9 @@
 
   #home-page {
     padding-bottom: 120px !important;
-    background-color: #101711;
-    background-attachment: scroll;
+    background-attachment: fixed !important;
+    background-position: 85% center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 }
