@@ -278,9 +278,15 @@ function openGame(id) {
   </div>
 </section>
 
+<button class="complete-button" id="complete-game">
+  ${completedGames.includes(id)
+    ? "✓ GAME COMPLETED"
+    : "🏆 MARK AS COMPLETED"}
+</button>
+
 <button class="save-button" id="save-game">
-      ${saved ? "♥ REMOVE FROM WISHLIST" : "♡ ADD TO WISHLIST"}
-    </button>
+  ${saved ? "♥ REMOVE FROM WISHLIST" : "♡ ADD TO WISHLIST"}
+</button>
 
     <p class="fine-print">
       Verify platform availability and requirements with the publisher.
