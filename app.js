@@ -103,12 +103,21 @@ const $ = id => document.getElementById(id);
 let activeCategory = "All";
 let wishlist = JSON.parse(localStorage.getItem("soulsArchiveWishlist") || "[]");
 
+
 function gameCard(game){
   return `<article class="game-card" data-game="${game.id}" tabindex="0" role="button" aria-label="View ${game.name}">
-    <img src="${game.image}" alt="" loading="lazy">
-    <div class="game-card-body"><div class="game-meta">${game.genre} · ${game.year}</div><div class="game-name">${game.name}</div><div class="game-difficulty">${game.difficulty}</div><div class="game-open">VIEW DETAILS ↗</div></div>
+    <div class="game-card-image">
+      <img src="${game.image}" alt="${game.name}" loading="lazy">
+    </div>
+    <div class="game-card-body">
+      <div class="game-meta">${game.genre} · ${game.year}</div>
+      <div class="game-name">${game.name}</div>
+      <div class="game-difficulty">${game.difficulty}</div>
+      <div class="game-open">VIEW DETAILS ↗</div>
+    </div>
   </article>`;
 }
+
 function bindCards(root){
   root.querySelectorAll("[data-game]").forEach(card=>{
     const open=()=>openGame(Number(card.dataset.game));
