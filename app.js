@@ -118,9 +118,80 @@ function gameCard(game){
   </article>`;
 }
 
+async function animateCardOpen(card, gameId) {
+  const rect = card.getBoundingClientRect();
+
+  // Fallback for browsers without animation support
+  if (!card.animate) {
+    openGame(gameId);
+    return;
+  }
+
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    background: rgba(3, 9, 16, .88);
+    opacity: 1;
+  `;
+
+  const clone = card.cloneNode(true);
+
+  clone.style.cssText += `
+    position: fixed;
+    top: ${rect.top}px;
+    left: ${rect.left}px;
+    width: ${rect.width}px;
+    height: ${rect.height}px;
+    margin: 0;
+    z-index: 99999;
+    transform-origin: top left;
+    pointer-events: none;
+  `;
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(clone);
+
+  const scaleX = window.innerWidth / rect.width;
+  const scaleY = window.innerHeight / rect.height;
+
+  const expansion = clone.animate([
+    { transform: "translate(0, 0) scale(1)" },
+    {
+      transform: `translate(${-rect.left}px, ${-rect.top}px) scale(${scaleX}, ${scaleY})`
+    }
+  ], {
+    duration: 800,
+    easing: "cubic-bezier(.22, 1, .36, 1)",
+    fill: "forwards"
+  });
+
+  try {
+    await expansion.finished;
+  } catch (error) {}
+
+  openGame(gameId);
+
+  clone.animate(
+    [{ opacity: 1 }, { opacity: 0 }],
+    { duration: 300, easing: "ease-out", fill: "forwards" }
+  );
+
+  overlay.animate(
+    [{ opacity: 1 }, { opacity: 0 }],
+    { duration: 300, fill: "forwards" }
+  );
+
+  await new Promise(resolve => setTimeout(resolve, 320));
+
+  clone.remove();
+  overlay.remove();
+}
+
 function bindCards(root){
   root.querySelectorAll("[data-game]").forEach(card=>{
-    const open=()=>openGame(Number(card.dataset.game));
+    const open=()=>animateCardOpen(card, Number(card.dataset.game));
     card.addEventListener("click",open);
     card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});
   });
