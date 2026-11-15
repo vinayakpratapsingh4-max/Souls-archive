@@ -423,3 +423,23 @@ $("explore-button").addEventListener("click",()=>{showPage("home-page");});
 if("serviceWorker" in navigator && location.protocol!=="file:"){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 }
+// ===== WINTER INTRO =====
+
+const introScreen = document.getElementById("intro-screen");
+const enterButton = document.getElementById("enter-archive");
+
+if (introScreen && enterButton) {
+  if (localStorage.getItem("soulsArchiveVisited") === "true") {
+    introScreen.remove();
+  } else {
+    enterButton.addEventListener("click", () => {
+      localStorage.setItem("soulsArchiveVisited", "true");
+
+      introScreen.classList.add("intro-exit");
+
+      setTimeout(() => {
+        introScreen.remove();
+      }, 1800);
+    });
+  }
+}
