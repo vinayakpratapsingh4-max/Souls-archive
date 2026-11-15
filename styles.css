@@ -4,3 +4,23 @@
 [hidden]{display:none!important}
 @media(max-width:700px){.container{padding:16px 14px 30px}.hero{min-height:270px}.hero-content{padding:23px}.game-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.game-card img{height:135px}.section-heading h2{font-size:21px}.topbar{height:66px;padding:0 15px}}
 @media(min-width:701px){.hero{min-height:390px}.game-card img{height:180px}}
+
+.requirements-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.requirement-line {
+  margin: 0;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.requirement-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
