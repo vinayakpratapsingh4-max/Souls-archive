@@ -236,8 +236,75 @@ function openGame(id) {
   });
 
   showPage("detail-page");
+  loadSteamPrice(id);
 }
+const steamAppIds = {
+  1: "1245620",
+  2: "570940",
+  3: "335300",
+  4: "374320",
+  7: "814380",
+  8: "1888160",
+  9: "2358720",
+  10: "1627720",
+  11: "1501750",
+  12: "1325200",
+  13: "1448440",
+  14: "367520",
+  15: "1030300",
+  16: "1809540"
+};
 
+async function loadSteamPrice(id) {
+  const appid = steamAppIds[id];
+  const box = $("steam-price");
+
+  if (!box) return;
+
+  if (!appid) {
+    box.textContent = "This game is not available on Steam.";
+    return;
+  }
+
+  box.textContent = "Loading Steam price...";
+
+  try {
+    const response = await fetch(`/api/steam/${appid}`);
+    const data = await response.json();
+
+    if ($("steam-price") !== box) return;
+
+    if (!response.ok || data.error) {
+      box.textContent = "Steam price is currently unavailable.";
+      return;
+    }
+
+    if (!data.available) {
+      box.textContent = data.message || "Price not available.";
+      return;
+    }
+
+    const original = data.originalFormatted || data.finalFormatted;
+    const finalPrice = data.finalFormatted || "Price unavailable";
+
+    box.innerHTML = `
+      <span class="subtle">Steam · India</span>
+      <strong>${finalPrice}</strong>
+      ${
+        data.discountPercent > 0
+          ? `<span class="subtle"><s>${original}</s> · ${data.discountPercent}% OFF</span>`
+          : ""
+      }
+      <a href="${data.storeUrl}" target="_blank" rel="noopener noreferrer">
+        View on Steam ↗
+      </a>
+    `;
+  } catch (error) {
+    if ($("steam-price") === box) {
+      box.textContent = "Could not load Steam price. Try again later.";
+    }
+  }
+    }
 function renderDevices(){
   const platform = $("platform-select").value;
 
