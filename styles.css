@@ -492,13 +492,3 @@
   }
 }
 
-/* ===== EXPANDING GAME CARD ===== */
-
-.game-card {
-  transform-origin: center center;
-  will-change: transform;
-}
-
-.game-card:active {
-  transform: scale(.99);
-}
