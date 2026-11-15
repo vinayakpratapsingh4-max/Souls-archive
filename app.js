@@ -32,6 +32,73 @@ const games = [
   {id:16,name:"Nine Sols",genre:"Metroidvania",year:2024,studio:"Red Candle Games",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S","Nintendo Switch"],description:"A hand-drawn action platformer with deflection-focused combat and science-fantasy lore.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1809540/header.jpg"}
   ];
 
+const gameDetails = {
+  1: {
+    min: "OS: Windows 10 | CPU: Intel Core i5-8400 / Ryzen 3 3300X | RAM: 12 GB | GPU: GTX 1060 3GB / RX 580 4GB | DirectX 12 | Storage: 60 GB",
+    rec: "OS: Windows 10/11 | CPU: Intel Core i7-8700K / Ryzen 5 3600X | RAM: 16 GB | GPU: GTX 1070 8GB / RX Vega 56 8GB | DirectX 12 | Storage: 60 GB"
+  },
+  2: {
+    min: "OS: Windows 7 64-bit | CPU: Intel Core i5-2300 / AMD FX-6300 | RAM: 6 GB | GPU: GTX 460 / Radeon HD 6870 | DirectX 11 | Storage: 8 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i5-4570 / AMD FX-6300 | RAM: 8 GB | GPU: GTX 660 / Radeon HD 7870 | DirectX 11 | Storage: 8 GB"
+  },
+  3: {
+    min: "OS: Windows 7 SP1 64-bit | CPU: Intel Core i3-2100 / AMD A8 3870 | RAM: 4 GB | GPU: GTX 465 / Radeon HD 6870 | DirectX 11 | Storage: 23 GB",
+    rec: "OS: Windows 7 SP1 64-bit | CPU: Intel Core i7-2600 / AMD FX-8150 | RAM: 8 GB | GPU: GTX 750 / Radeon HD 7850 | DirectX 11 | Storage: 23 GB"
+  },
+  4: {
+    min: "OS: Windows 7 64-bit | CPU: Intel Core i3-2100 / AMD FX-6300 | RAM: 4 GB | GPU: GTX 750 Ti / Radeon HD 7950 | DirectX 11 | Storage: 25 GB",
+    rec: "OS: Windows 7 64-bit | CPU: Intel Core i7-3770 / AMD FX-8350 | RAM: 8 GB | GPU: GTX 970 / Radeon R9 series | DirectX 11 | Storage: 25 GB"
+  },
+  5: {
+    min: "No official PC version or published PC requirements.",
+    rec: "Available on PlayStation 3 and PlayStation 5."
+  },
+  6: {
+    min: "No official PC version or published PC requirements.",
+    rec: "Available on PlayStation 4."
+  },
+  7: {
+    min: "OS: Windows 7 64-bit | CPU: Intel Core i3-2100 / AMD FX-6300 | RAM: 4 GB | GPU: GTX 760 / Radeon HD 7950 | DirectX 11 | Storage: 25 GB",
+    rec: "OS: Windows 7 64-bit | CPU: Intel Core i5-2500K / AMD FX-6300 | RAM: 8 GB | GPU: GTX 970 / Radeon RX 570 | DirectX 11 | Storage: 25 GB"
+  },
+  8: {
+    min: "OS: Windows 10 | CPU: Intel Core i5-8600K / Ryzen 3 3300X | RAM: 12 GB | GPU: GTX 960 / Radeon RX 480 | DirectX 12 | Storage: 60 GB",
+    rec: "OS: Windows 10 | CPU: Intel Core i7-7700 / Ryzen 5 2600 | RAM: 12 GB | GPU: GTX 1060 / Radeon RX 590 | DirectX 12 | Storage: 60 GB"
+  },
+  9: {
+    min: "OS: Windows 10 64-bit | CPU: Intel Core i5-8400 / Ryzen 5 1600 | RAM: 16 GB | GPU: GTX 1060 6GB / RX 580 8GB | DirectX 11 | Storage: 130 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i7-9700 / Ryzen 5 5500 | RAM: 16 GB | GPU: RTX 2060 / RX 5700 XT | DirectX 12 | Storage: 130 GB SSD"
+  },
+  10: {
+    min: "OS: Windows 10 64-bit | CPU: Intel Core i3-6300 / Ryzen 3 1200 | RAM: 8 GB | GPU: GTX 960 4GB / RX 560 4GB | DirectX 12 | Storage: 50 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i3-6300 / Ryzen 3 1200 | RAM: 16 GB | GPU: GTX 1660 6GB / RX 6500 XT 4GB | DirectX 12 | Storage: 50 GB"
+  },
+  11: {
+    min: "OS: Windows 10 64-bit | CPU: Intel Core i5-8400 / Ryzen 5 2600 | RAM: 12 GB | GPU: GTX 1060 6GB / RX 590 | DirectX 12 | Storage: 45 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i7-8700 / Ryzen 5 3600 | RAM: 16 GB | GPU: RTX 2080 / RX 6700 | DirectX 12 | Storage: 45 GB SSD"
+  },
+  12: {
+    min: "OS: Windows 10 64-bit | CPU: Intel Core i5-4460 | RAM: 6 GB | GPU: GTX 970 / GTX 1650 | DirectX 11 | Storage: 85 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i7-6700 | RAM: 16 GB | GPU: GTX 1660 SUPER | DirectX 11 | Storage: 85 GB"
+  },
+  13: {
+    min: "OS: Windows 10/11 64-bit | CPU: Intel Core i5-8400 / Ryzen 5 3400G | RAM: 8 GB | GPU: GTX 1650 4GB / RX 570 4GB | DirectX 12 | Storage: 60 GB",
+    rec: "OS: Windows 10/11 64-bit | CPU: Intel Core i7-8700 / Ryzen 5 3600XT | RAM: 16 GB | GPU: RTX 2060 6GB / RX 5700 XT 8GB | DirectX 12 | Storage: 60 GB"
+  },
+  14: {
+    min: "OS: Windows 7 64-bit | CPU: Intel Core 2 Duo E5200 | RAM: 4 GB | GPU: GeForce 9800GTX+ / Radeon HD 4890 | DirectX 10 | Storage: 9 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i5 | RAM: 8 GB | GPU: GTX 560 | DirectX 10 | Storage: 9 GB"
+  },
+  15: {
+    min: "PC version available. Check the current Steam listing for the latest minimum CPU, GPU, RAM and storage requirements.",
+    rec: "Check the current Steam listing for recommended hardware."
+  },
+  16: {
+    min: "OS: Windows 10 64-bit | CPU: Intel Core i3-6100 | RAM: 8 GB | GPU: GTX 660 | DirectX 11 | Storage: 5 GB",
+    rec: "OS: Windows 10 64-bit | CPU: Intel Core i5-8400 | RAM: 16 GB | GPU: GTX 970 | DirectX 11 | Storage: 5 GB"
+  }
+};
+
 const $ = id => document.getElementById(id);
 let activeCategory = "All";
 let wishlist = JSON.parse(localStorage.getItem("soulsArchiveWishlist") || "[]");
