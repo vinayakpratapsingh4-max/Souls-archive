@@ -188,7 +188,31 @@ function completeGame(id) {
     background:#000c;opacity:0;
     transition:opacity .5s ease;
   `;
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+function playUnlockSound() {
+  const now = audioContext.currentTime;
+
+  [220, 330, 440].forEach((frequency, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(frequency, now + index * 0.16);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.16 + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start(now + index * 0.16);
+    oscillator.stop(now + 1.8);
+  });
+}
+
+playUnlockSound();
   document.body.appendChild(popup);
   requestAnimationFrame(() => popup.style.opacity = "1");
 
