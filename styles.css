@@ -417,15 +417,13 @@
 }
 
 
-/* ===== MINIMAL NAVY GLASS GAME CARDS ===== */
+
+/* ===== SOULS ARCHIVE - FULL ARTWORK CARDS ===== */
 
 .game-card {
   position: relative;
   overflow: hidden;
-  background: #101c2b;
-  border: 1px solid rgba(100, 145, 190, .25);
-  transition: transform .45s ease, border-color .45s ease,
-              box-shadow .45s ease;
+  isolation: isolate;
 }
 
 .game-card > img {
@@ -433,34 +431,35 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.12);
-  filter: brightness(.78);
-  transition: transform .9s ease, filter .7s ease;
+  transform: scale(1.08);
+  filter: brightness(.85);
+  transition: transform .8s cubic-bezier(.2,.7,.2,1),
+              filter .6s ease;
 }
 
+/* Minimal title strip */
 .game-card-body {
   position: absolute;
   left: 8px;
   right: 8px;
   bottom: 8px;
-  padding: 11px 13px;
-  border: 1px solid rgba(150, 190, 225, .2);
-  border-radius: 9px;
-  background: rgba(9, 23, 39, .68);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background .4s, border-color .4s;
+  padding: 9px 12px;
+  border: 1px solid rgba(130, 169, 210, .2);
+  border-radius: 7px;
+  background: rgba(9, 23, 40, .58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background .4s ease;
 }
 
 .game-meta {
-  font-size: 10px;
+  font-size: 9px;
   color: #a9c5e0;
-  letter-spacing: 1px;
 }
 
 .game-name {
   color: #edf4fb;
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .game-difficulty,
@@ -468,13 +467,7 @@
   display: none;
 }
 
-.game-card:hover,
-.game-card:focus-visible {
-  transform: translateY(-4px);
-  border-color: #729bc5;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .4);
-}
-
+/* Reveal full artwork */
 .game-card:hover > img,
 .game-card:focus-visible > img {
   transform: scale(1);
@@ -483,11 +476,19 @@
 
 .game-card:hover .game-card-body,
 .game-card:focus-visible .game-card-body {
-  background: rgba(8, 20, 34, .55);
-  border-color: rgba(150, 190, 225, .4);
+  background: rgba(9, 23, 40, .42);
 }
 
-/* Touch-and-hold on mobile */
+.game-card {
+  transition: transform .4s ease, border-color .4s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: #6689b0;
+}
+
+/* Mobile touch */
 @media (hover: none) {
   .game-card:active > img {
     transform: scale(1);
