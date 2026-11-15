@@ -492,30 +492,34 @@
   }
 }
 
-/* ===== MAIN PAGE BACKGROUND ===== */
+/* ===== FULL WIDTH HOME BACKGROUND ===== */
 
 #home-page {
   position: relative;
   isolation: isolate;
-  background-color: transparent !important;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 24px max(20px, calc((100vw - 1080px) / 2)) 42px;
+
+  background-color: #101711;
   background-image:
     linear-gradient(
-      rgba(10, 17, 22, .30),
-      rgba(10, 17, 22, .55)
+      rgba(10, 17, 22, .25),
+      rgba(10, 17, 22, .48)
     ),
     url("./site-background.jpg");
+
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: scroll;
 }
 
-/* Mobile background */
+/* Mobile */
 @media (max-width: 600px) {
   #home-page {
-    background-attachment: scroll;
+    padding: 16px 14px 30px;
     background-position: 85% center;
-    background-size: auto 100%;
-    background-repeat: no-repeat;
+    background-size: cover;
   }
 }
