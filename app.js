@@ -1,14 +1,37 @@
+
 const games = [
-{id:1,name:"Elden Ring",genre:"Souls",year:2022,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PlayStation 4","PlayStation 5","Xbox"],description:"A vast dark fantasy open world filled with ancient secrets, dangerous enemies and legendary bosses.",image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=85",featured:true},
-{id:2,name:"Dark Souls III",genre:"Souls",year:2016,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PlayStation 4","Xbox"],description:"A fading kingdom, powerful lords and a beautifully atmospheric dark fantasy adventure.",image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=800&q=85",featured:true},
-{id:3,name:"Sekiro: Shadows Die Twice",genre:"Souls",year:2019,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PlayStation 4","Xbox"],description:"A shinobi's journey of precision, swordplay and intense one-on-one combat.",image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=85"},
-{id:4,name:"Bloodborne",genre:"Souls",year:2015,studio:"FromSoftware",difficulty:"Hard",platforms:["PlayStation 4"],description:"Hunt through a gothic city where terrifying secrets hide behind every corner.",image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=800&q=85"},
-{id:5,name:"Lies of P",genre:"Soulslike",year:2023,studio:"NEOWIZ",difficulty:"Hard",platforms:["PC","PlayStation 4","PlayStation 5","Xbox"],description:"A twisted retelling of Pinocchio with mechanical enemies and challenging combat.",image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=85",featured:true},
-{id:6,name:"Hollow Knight",genre:"Metroidvania",year:2017,studio:"Team Cherry",difficulty:"Challenging",platforms:["PC","PlayStation 4","Xbox","Nintendo Switch"],description:"Explore a mysterious underground kingdom in this atmospheric 2D adventure.",image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=800&q=85",featured:true},
-{id:7,name:"Nine Sols",genre:"Metroidvania",year:2024,studio:"Red Candle Games",difficulty:"Hard",platforms:["PC","PlayStation 4","PlayStation 5","Xbox","Nintendo Switch"],description:"A hand-drawn action platformer with deflection-focused combat and science-fantasy lore.",image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=85"},
-{id:8,name:"Lords of the Fallen",genre:"Soulslike",year:2023,studio:"CI Games",difficulty:"Hard",platforms:["PC","PlayStation 5","Xbox"],description:"Journey through two parallel realms in a brutal dark fantasy world.",image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=800&q=85"},
-{id:9,name:"Nioh 2",genre:"Soulslike",year:2020,studio:"Team Ninja",difficulty:"Very hard",platforms:["PC","PlayStation 4","PlayStation 5"],description:"A demanding action RPG blending samurai combat, yokai abilities and deep character builds.",image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=85"}
-];
+  {id:1,name:"Elden Ring",genre:"Souls",year:2022,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"Explore the Lands Between in an enormous dark fantasy world.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg",featured:true},
+
+  {id:2,name:"Dark Souls Remastered",genre:"Souls",year:2018,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","Xbox One","Nintendo Switch"],description:"Return to Lordran in the remastered version of the game that defined a genre.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/570940/header.jpg",featured:true},
+
+  {id:3,name:"Dark Souls II: Scholar of the First Sin",genre:"Souls",year:2015,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PS3","PS4","Xbox 360","Xbox One"],description:"Journey through Drangleic and uncover the mysteries of the cursed kingdom.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/335300/header.jpg"},
+
+  {id:4,name:"Dark Souls III",genre:"Souls",year:2016,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PS4","Xbox One"],description:"A fading kingdom, powerful lords and a haunting dark fantasy adventure.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/374320/header.jpg",featured:true},
+
+  {id:5,name:"Demon's Souls",genre:"Souls",year:2009,studio:"FromSoftware / Bluepoint Games",difficulty:"Very hard",platforms:["PS3","PS5"],description:"Return to Boletaria and face the ancient evil hidden beyond the fog.",image:"https://www.playstation.com/en-in/games/demons-souls/",featured:true},
+
+  {id:6,name:"Bloodborne",genre:"Souls",year:2015,studio:"FromSoftware",difficulty:"Hard",platforms:["PS4"],description:"Explore the gothic city of Yharnam and uncover its terrifying secrets.",image:"https://www.playstation.com/en-us/games/bloodborne/",featured:true},
+
+  {id:7,name:"Sekiro: Shadows Die Twice",genre:"Souls",year:2019,studio:"FromSoftware",difficulty:"Very hard",platforms:["PC","PS4","Xbox One"],description:"A shinobi's journey built around precision, timing and intense combat.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/814380/header.jpg",featured:true},
+
+  {id:8,name:"Armored Core VI: Fires of Rubicon",genre:"Action RPG",year:2023,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"Pilot a customizable mech through a futuristic conflict on Rubicon 3.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1888160/header.jpg"},
+
+  {id:9,name:"Black Myth: Wukong",genre:"Soulslike",year:2024,studio:"Game Science",difficulty:"Hard",platforms:["PC","PS5","Xbox Series X/S"],description:"Experience a spectacular action RPG inspired by Journey to the West.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2358720/header.jpg",featured:true},
+
+  {id:10,name:"Lies of P",genre:"Soulslike",year:2023,studio:"NEOWIZ",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"A dark reimagining of Pinocchio set in the city of Krat.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1627720/header.jpg",featured:true},
+
+  {id:11,name:"Lords of the Fallen",genre:"Soulslike",year:2023,studio:"CI Games",difficulty:"Hard",platforms:["PC","PS5","Xbox Series X/S"],description:"Travel between two parallel realms in a brutal dark fantasy world.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1501750/header.jpg"},
+
+  {id:12,name:"Nioh 2",genre:"Soulslike",year:2020,studio:"Team Ninja",difficulty:"Very hard",platforms:["PC","PS4","PS5"],description:"Fight powerful yokai in a challenging samurai action RPG.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1325200/header.jpg",featured:true},
+
+  {id:13,name:"Wo Long: Fallen Dynasty",genre:"Soulslike",year:2023,studio:"Team Ninja",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"A dark fantasy adventure inspired by the Three Kingdoms era.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1448440/header.jpg"},
+
+  {id:14,name:"Hollow Knight",genre:"Metroidvania",year:2017,studio:"Team Cherry",difficulty:"Challenging",platforms:["PC","PS4","Xbox One","Nintendo Switch"],description:"Explore the mysterious underground kingdom of Hallownest.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/367520/header.jpg",featured:true},
+
+  {id:15,name:"Hollow Knight: Silksong",genre:"Metroidvania",year:2025,studio:"Team Cherry",difficulty:"Challenging",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S","Nintendo Switch","Nintendo Switch 2"],description:"Play as Hornet and explore the vast kingdom of Pharloom.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/header.jpg",featured:true},
+
+  {id:16,name:"Nine Sols",genre:"Metroidvania",year:2024,studio:"Red Candle Games",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S","Nintendo Switch"],description:"A hand-drawn action platformer with deflection-focused combat and science-fantasy lore.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1809540/header.jpg"}
+  ];
 
 const $ = id => document.getElementById(id);
 let activeCategory = "All";
