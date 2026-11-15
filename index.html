@@ -71,7 +71,39 @@
       <div id="wishlist-games" class="game-grid"></div>
       <p id="wishlist-empty" class="empty-state">Your wishlist is empty. Discover a game and save it here.</p>
     </section>
+<section id="rankings-page" class="page" hidden>
+  <p class="eyebrow">YOUR LEGEND BEGINS</p>
+  <h1 class="page-title">Hall of Legends</h1>
+  <p class="subtle intro">Your journey, your achievements, your legacy.</p>
 
+  <div class="panel">
+    <p class="eyebrow">CURRENT PLAYER RANK</p>
+    <h2 id="player-rank">UNRANKED</h2>
+    <p id="rank-progress" class="subtle">Complete games to earn your rank.</p>
+    <div id="rank-progress-bar"></div>
+  </div>
+
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">YOUR JOURNEY</p>
+      <h2>Completed games</h2>
+    </div>
+    <span id="completed-count" class="subtle">0</span>
+  </div>
+  <div id="completed-games" class="game-grid"></div>
+
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">YOUR TROPHIES</p>
+      <h2>Achievements earned</h2>
+    </div>
+    <span id="achievement-count" class="subtle">0</span>
+  </div>
+  <div id="achievement-list"></div>
+  <p id="achievement-empty" class="empty-state">
+    No achievements earned yet. Complete your first game to begin your collection.
+  </p>
+</section>
     <section id="devices-page" class="page" hidden>
       <p class="eyebrow">KNOW BEFORE YOU PLAY</p><h1 class="page-title">Device compatibility</h1>
       <p class="subtle intro">Choose a platform to see games listed for it.</p>
@@ -98,6 +130,7 @@
   <nav class="bottom-nav" aria-label="Main navigation">
     <button class="nav-item active" data-page="home-page"><span>⌂</span>DISCOVER</button>
     <button class="nav-item" data-page="wishlist-page"><span>♡</span>WISHLIST</button>
+<button class="nav-item" data-page="rankings-page"><span>♛</span>RANKINGS</button>
     <button class="nav-item" data-page="devices-page"><span>▣</span>DEVICES</button>
     <button class="nav-item" data-page="about-page"><span>☰</span>ARCHIVE</button>
   </nav>
