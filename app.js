@@ -255,6 +255,7 @@ const steamAppIds = {
   16: "1809540"
 };
 
+
 async function loadSteamPrice(id) {
   const appid = steamAppIds[id];
   const box = $("steam-price");
@@ -262,11 +263,21 @@ async function loadSteamPrice(id) {
   if (!box) return;
 
   if (!appid) {
-    box.textContent = "This game is not available on Steam.";
+    box.innerHTML = `
+      <div class="steam-unavailable">
+        <span>STEAM UNAVAILABLE</span>
+        <p>This title does not have an official PC version on Steam.</p>
+      </div>
+    `;
     return;
   }
 
-  box.textContent = "Loading Steam price...";
+  box.innerHTML = `
+    <div class="steam-loading">
+      <span class="steam-loader"></span>
+      <p>Connecting to Steam Store...</p>
+    </div>
+  `;
 
   try {
     const response = await fetch(`/api/steam/${appid}`);
@@ -275,36 +286,82 @@ async function loadSteamPrice(id) {
     if ($("steam-price") !== box) return;
 
     if (!response.ok || data.error) {
-      box.textContent = "Steam price is currently unavailable.";
+      box.innerHTML = `
+        <div class="steam-unavailable">
+          <p>Steam pricing is temporarily unavailable.</p>
+        </div>
+      `;
       return;
     }
 
     if (!data.available) {
-      box.textContent = data.message || "Price not available.";
+      box.innerHTML = `
+        <div class="steam-unavailable">
+          <p>${data.message || "Price currently unavailable."}</p>
+        </div>
+        <a class="steam-store-button"
+           href="https://store.steampowered.com/app/${appid}/"
+           target="_blank" rel="noopener noreferrer">
+          <span>VIEW ON STEAM</span>
+          <span class="steam-button-arrow">↗</span>
+        </a>
+      `;
       return;
     }
 
-    const original = data.originalFormatted || data.finalFormatted;
-    const finalPrice = data.finalFormatted || "Price unavailable";
+    const finalPrice = data.finalFormatted || "Unavailable";
+    const originalPrice = data.originalFormatted || "";
+    const discount = Number(data.discountPercent) || 0;
 
     box.innerHTML = `
-      <span class="subtle">Steam · India</span>
-      <strong>${finalPrice}</strong>
-      ${
-        data.discountPercent > 0
-          ? `<span class="subtle"><s>${original}</s> · ${data.discountPercent}% OFF</span>`
-          : ""
-      }
-      <a href="${data.storeUrl}" target="_blank" rel="noopener noreferrer">
-        View on Steam ↗
+      <div class="steam-price-top">
+        <span class="steam-status-dot"></span>
+        <span>STEAM STORE</span>
+        <span class="steam-region">INDIA · INR</span>
+      </div>
+
+      <div class="steam-price-main">
+        <span class="steam-price-label">CURRENT PRICE</span>
+        <div class="steam-price-value">${finalPrice}</div>
+        ${
+          discount > 0
+            ? `
+              <div class="steam-sale-row">
+                <span class="steam-original-price">${originalPrice}</span>
+                <span class="steam-discount">${discount}% OFF</span>
+              </div>
+            `
+            : `<span class="steam-regular-label">REGIONAL STEAM PRICE</span>`
+        }
+      </div>
+
+      <div class="steam-divider"></div>
+
+      <div class="steam-price-footer">
+        <span>Official Steam Store pricing</span>
+        <span class="steam-live-label">● LIVE DATA</span>
+      </div>
+
+      <a class="steam-store-button"
+         href="${data.storeUrl}"
+         target="_blank"
+         rel="noopener noreferrer">
+        <span class="steam-button-icon">↗</span>
+        <span>VIEW ON STEAM</span>
+        <span class="steam-button-arrow">→</span>
       </a>
     `;
   } catch (error) {
     if ($("steam-price") === box) {
-      box.textContent = "Could not load Steam price. Try again later.";
+      box.innerHTML = `
+        <div class="steam-unavailable">
+          <p>Unable to connect to Steam. Please try again later.</p>
+        </div>
+      `;
     }
   }
-    }
+}
+
 function renderDevices(){
   const platform = $("platform-select").value;
 
