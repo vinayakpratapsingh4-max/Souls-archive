@@ -80,23 +80,96 @@ function notify(message){
   const toast=$("toast");toast.textContent=message;toast.classList.add("show");
   clearTimeout(notify.timer);notify.timer=setTimeout(()=>toast.classList.remove("show"),1700);
 }
-function openGame(id){
-  const game=games.find(g=>g.id===id);if(!game)return;
-  const saved=wishlist.includes(id);
-  $("game-detail").innerHTML=`
+
+function requirementLines(text) {
+  if (!text) return "<p>Not available</p>";
+
+  return text.split("|").map(item =>
+    `<p class="requirement-line">${item.trim()}</p>`
+  ).join("");
+}
+
+function openGame(id) {
+  const game = games.find(g => g.id === id);
+  if (!game) return;
+
+  const details = gameDetails[id] || {};
+  const saved = wishlist.includes(id);
+
+  $("game-detail").innerHTML = `
     <img class="detail-cover" src="${game.image}" alt="${game.name}">
+
     <div class="detail-kicker eyebrow">${game.genre.toUpperCase()} · ${game.year}</div>
-    <h1 class="detail-title">${game.name}</h1><p class="subtle">${game.studio}</p>
-    <div class="pills"><span class="pill">${game.difficulty}</span><span class="pill">${game.genre}</span></div>
-    <section class="detail-section"><h3>The journey</h3><p class="detail-description">${game.description}</p></section>
-    <section class="detail-section"><h3>Platform availability</h3><div class="pills">${game.platforms.map(p=>`<span class="pill">${p}</span>`).join("")}</div></section>
-    <section class="detail-section"><h3>Price & offers</h3><div class="price-box">Store price<strong>Not connected yet</strong><span class="subtle">Live regional pricing will be added in a future update.</span></div></section>
-    <button class="save-button" id="save-game">${saved?"♥ REMOVE FROM WISHLIST":"♡ ADD TO WISHLIST"}</button>
-    <p class="fine-print">Introductory game information. Verify platform availability and prices with the publisher or store before purchasing.</p>`;
-  $("save-game").addEventListener("click",()=>{
-    wishlist=wishlist.includes(id)?wishlist.filter(x=>x!==id):[...wishlist,id];
-    saveWishlist();openGame(id);notify(wishlist.includes(id)?"Added to wishlist":"Removed from wishlist");
+    <h1 class="detail-title">${game.name}</h1>
+    <p class="subtle">${game.studio}</p>
+
+    <div class="pills">
+      <span class="pill">${game.difficulty}</span>
+      <span class="pill">${game.genre}</span>
+    </div>
+
+    <section class="detail-section">
+      <h3>THE JOURNEY</h3>
+      <p class="detail-description">${details.description || game.description}</p>
+    </section>
+
+    <section class="detail-section">
+      <h3>PLATFORM AVAILABILITY</h3>
+      <div class="pills">
+        ${game.platforms.map(p => `<span class="pill">${p}</span>`).join("")}
+      </div>
+    </section>
+
+    <section class="detail-section">
+      <h3>PC SYSTEM REQUIREMENTS</h3>
+
+      <div class="price-box">
+        <strong>MINIMUM REQUIREMENTS</strong>
+        <div class="requirements-list">
+          ${requirementLines(details.min)}
+        </div>
+      </div>
+
+      <div class="price-box">
+        <strong>RECOMMENDED REQUIREMENTS</strong>
+        <div class="requirements-list">
+          ${requirementLines(details.rec)}
+        </div>
+      </div>
+
+      <p class="fine-print">
+        Actual performance may vary depending on your PC.
+      </p>
+    </section>
+
+    <section class="detail-section">
+      <h3>PRICE & OFFERS</h3>
+      <div class="price-box">
+        Store price
+        <strong>Not connected yet</strong>
+        <span class="subtle">Live regional pricing will be added in a future update.</span>
+      </div>
+    </section>
+
+    <button class="save-button" id="save-game">
+      ${saved ? "♥ REMOVE FROM WISHLIST" : "♡ ADD TO WISHLIST"}
+    </button>
+
+    <p class="fine-print">
+      Verify platform availability and requirements with the publisher.
+    </p>
+  `;
+
+  $("save-game").addEventListener("click", () => {
+    wishlist = wishlist.includes(id)
+      ? wishlist.filter(x => x !== id)
+      : [...wishlist, id];
+
+    saveWishlist();
+    openGame(id);
+    notify(wishlist.includes(id) ? "Added to wishlist" : "Removed from wishlist");
   });
+
   showPage("detail-page");
 }
 
