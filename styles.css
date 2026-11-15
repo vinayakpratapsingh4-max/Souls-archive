@@ -745,3 +745,21 @@
     padding-top: 30px;
   }
 }
+/* ===== MOBILE SCROLL & BACKGROUND FIX ===== */
+@media (max-width: 700px) {
+
+  .topbar {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  .container {
+    padding-bottom: 0 !important;
+  }
+
+  #home-page {
+    padding-bottom: 120px !important;
+    background-color: #101711;
+    background-attachment: scroll;
+  }
+}
