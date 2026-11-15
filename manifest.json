@@ -1,0 +1,13 @@
+{
+  "name": "SOULS.ARCHIVE",
+  "short_name": "SOULS",
+  "description": "The Gaming Codex — discover Souls and Soulslike games.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c0d0e",
+  "theme_color": "#0c0d0e",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+  ]
+}

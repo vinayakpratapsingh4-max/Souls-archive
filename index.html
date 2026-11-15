@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0d0e">
+  <meta name="description" content="A curated archive of Souls, Soulslike and challenging action games.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>SOULS.ARCHIVE — The Gaming Codex</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" data-page="home"><span class="brand-mark">✦</span><span>SOULS<span class="gold">.ARCHIVE</span><small>THE GAMING CODEX</small></span></a>
+    <button class="icon-button" id="header-wishlist" aria-label="Open wishlist">♡ <span id="wish-count">0</span></button>
+  </header>
+
+  <main class="container">
+    <section id="home-page" class="page">
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">BEYOND THE FOG</p>
+          <h1>A WORLD<br>OF SOULS</h1>
+          <p>Discover your next great challenge.</p>
+          <a href="#catalog" class="gold-button" id="explore-button">EXPLORE THE ARCHIVE <span>↗</span></a>
+        </div>
+      </section>
+
+      <div class="section-heading"><div><p class="eyebrow">HAND-PICKED WORLDS</p><h2>Featured games</h2></div></div>
+      <div id="featured-games" class="game-grid"></div>
+
+      <section id="catalog" class="catalog-section">
+        <div class="section-heading"><div><p class="eyebrow">FIND YOUR NEXT JOURNEY</p><h2>Explore the archive</h2></div><span class="subtle" id="game-total"></span></div>
+        <label class="search-wrap"><span>⌕</span><input id="search-input" type="search" placeholder="Search games..." autocomplete="off"></label>
+        <div class="filters" id="category-filters">
+          <button class="filter active" data-category="All">All</button>
+          <button class="filter" data-category="Souls">Souls</button>
+          <button class="filter" data-category="Soulslike">Soulslike</button>
+          <button class="filter" data-category="Metroidvania">Metroidvania</button>
+          <button class="filter" data-category="Action RPG">Action RPG</button>
+        </div>
+        <div id="catalog-games" class="game-grid"></div>
+        <p id="empty-state" class="empty-state" hidden>No games found. Try another search.</p>
+      </section>
+    </section>
+
+    <section id="wishlist-page" class="page" hidden>
+      <p class="eyebrow">SAVED FOR ANOTHER DAY</p><h1 class="page-title">Your collection</h1>
+      <p class="subtle intro">The games you want to return to.</p>
+      <div id="wishlist-games" class="game-grid"></div>
+      <p id="wishlist-empty" class="empty-state">Your wishlist is empty. Discover a game and save it here.</p>
+    </section>
+
+    <section id="devices-page" class="page" hidden>
+      <p class="eyebrow">KNOW BEFORE YOU PLAY</p><h1 class="page-title">Device compatibility</h1>
+      <p class="subtle intro">Choose a platform to see games listed for it.</p>
+      <label class="field-label" for="platform-select">SELECT YOUR PLATFORM</label>
+      <select id="platform-select">
+        <option>PC</option><option>PlayStation 4</option><option>PlayStation 5</option><option>Xbox</option><option>Nintendo Switch</option>
+      </select>
+      <div class="panel results-panel"><p class="eyebrow">COMPATIBILITY RESULTS</p><div id="device-results"></div></div>
+      <p class="fine-print">Platform availability is indicative and should be verified with the publisher or store before purchase. This is not a hardware performance test.</p>
+    </section>
+
+    <section id="detail-page" class="page" hidden>
+      <button class="back-button" id="back-button">← BACK TO ARCHIVE</button>
+      <div id="game-detail"></div>
+    </section>
+
+    <section id="about-page" class="page" hidden>
+      <p class="eyebrow">THE GAMING CODEX</p><h1 class="page-title">About the archive</h1>
+      <div class="panel about-panel"><h2>Built for the journey.</h2><p>SOULS.ARCHIVE is a curated discovery catalogue for Souls, Soulslike, Metroidvania and challenging action games.</p><p>Explore games, check listed platforms and save titles to your wishlist.</p><p class="subtle">Starter edition · Version 1.0</p></div>
+      <div class="panel about-panel"><p class="eyebrow">YOUR COLLECTION</p><strong id="about-wishlist-count">0</strong><p class="subtle">Games saved to your wishlist on this device.</p></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item active" data-page="home-page"><span>⌂</span>DISCOVER</button>
+    <button class="nav-item" data-page="wishlist-page"><span>♡</span>WISHLIST</button>
+    <button class="nav-item" data-page="devices-page"><span>▣</span>DEVICES</button>
+    <button class="nav-item" data-page="about-page"><span>☰</span>ARCHIVE</button>
+  </nav>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
