@@ -102,6 +102,41 @@ const gameDetails = {
 const $ = id => document.getElementById(id);
 let activeCategory = "All";
 let wishlist = JSON.parse(localStorage.getItem("soulsArchiveWishlist") || "[]");
+let completedGames = JSON.parse(
+  localStorage.getItem("soulsArchiveCompleted") || "[]"
+);
+
+function getPlayerRank() {
+  const count = completedGames.length;
+
+  if (count >= 14) return "Lord of Cinder";
+  if (count >= 10) return "Elden Lord";
+  if (count >= 6) return "Hunter";
+  if (count >= 3) return "Hollow";
+  if (count >= 1) return "Ashen One";
+
+  return "Unranked";
+}
+
+function completeGame(id) {
+  if (completedGames.includes(id)) {
+    notify("Achievement already unlocked!");
+    return;
+  }
+
+  completedGames.push(id);
+
+  localStorage.setItem(
+    "soulsArchiveCompleted",
+    JSON.stringify(completedGames)
+  );
+
+  const game = games.find(g => g.id === id);
+
+  notify("🏆 " + game.name + " completed!");
+  openGame(id);
+}
+
 
 
 function gameCard(game){
@@ -302,6 +337,9 @@ function openGame(id) {
     openGame(id);
     notify(wishlist.includes(id) ? "Added to wishlist" : "Removed from wishlist");
   });
+$("complete-game").addEventListener("click", () => {
+  completeGame(id);
+});
 
   showPage("detail-page");
   loadSteamPrice(id);
