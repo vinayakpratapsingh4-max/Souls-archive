@@ -99,12 +99,46 @@ function openGame(id){
   });
   showPage("detail-page");
 }
+
 function renderDevices(){
-  const platform=$("platform-select").value;
-  const matches=games.filter(g=>g.platforms.includes(platform));
-  $("device-results").innerHTML=`<p class="eyebrow">${matches.length} GAMES LISTED</p>`+
-    (matches.length?matches.map(g=>`<div class="result-row"><span>${g.name}</span><button class="text-button" data-open="${g.id}">DETAILS →</button></div>`).join(""):"<p class='subtle'>No games in this starter catalogue are listed for this platform.</p>");
-  $("device-results").querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openGame(Number(b.dataset.open))));
+  const platform = $("platform-select").value;
+
+  const normalize = p => p.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  const aliases = {
+    "playstation3": "ps3",
+    "playstation4": "ps4",
+    "playstation5": "ps5"
+  };
+
+  const selected = aliases[normalize(platform)] || normalize(platform);
+
+  const matches = games.filter(g =>
+    g.platforms.some(p => {
+      const gamePlatform = normalize(p);
+
+      if (selected === "xbox") {
+        return gamePlatform.startsWith("xbox");
+      }
+
+      return gamePlatform === selected;
+    })
+  );
+
+  $("device-results").innerHTML =
+    `<p class="eyebrow">${matches.length} GAMES LISTED</p>` +
+    (matches.length
+      ? matches.map(g =>
+          `<div class="result-row">
+            <span>${g.name}</span>
+            <button class="text-button" data-open="${g.id}">DETAILS →</button>
+          </div>`
+        ).join("")
+      : "<p class='subtle'>No games in this starter catalogue are listed for this platform.</p>");
+
+  $("device-results").querySelectorAll("[data-open]").forEach(b =>
+    b.addEventListener("click", () => openGame(Number(b.dataset.open)))
+  );
 }
 
 $("featured-games").innerHTML=games.filter(g=>g.featured).map(gameCard).join("");
