@@ -248,8 +248,17 @@ function renderRankings() {
     }
   }
 
-  $("player-rank").textContent = current.name.toUpperCase();
+  const rankSymbols = {
+  "Unranked": "◇",
+  "Ashen One": "♨",
+  "Hollow": "☽",
+  "Hunter": "✦",
+  "Elden Lord": "♛",
+  "Lord of Cinder": "🔥"
+};
 
+$("player-rank").innerHTML =
+  `${current.name.toUpperCase()} <span class="rank-symbol">${rankSymbols[current.name]}</span>`;
   $("rank-progress").textContent = next
     ? `${count} / ${next.min} games completed · ${next.min - count} more to ${next.name}`
     : "You have reached the highest rank.";
