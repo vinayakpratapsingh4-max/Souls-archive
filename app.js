@@ -577,6 +577,7 @@ const steamAppIds = {
   16: "1809540"
 };
 
+
 async function loadGameScreenshots(id) {
   const box = document.getElementById("game-screenshots");
   if (!box) return;
@@ -591,28 +592,150 @@ async function loadGameScreenshots(id) {
   box.innerHTML = "<p class='subtle'>Loading screenshots...</p>";
 
   try {
-    const response = await fetch(`/api/steam/${appid}`);
+    const response = await fetch(
+      `https://store.steampowered.com/api/appdetails?appids=${appid}`
+    );
 
-    if (!response.ok) {
-      throw new Error("API request failed");
-    }
+    if (!response.ok) throw new Error("Steam request failed");
 
     const data = await response.json();
-    const screenshots = data.screenshots || [];
+    const screenshots = data[appid]?.data?.screenshots || [];
 
     if (!screenshots.length) {
       box.innerHTML = "<p class='subtle'>No screenshots available.</p>";
       return;
     }
 
-    box.innerHTML = screenshots.slice(0, 6).map(shot => `
-      <img
-        src="${shot.thumbnail}"
-        alt="Game screenshot"
-        loading="lazy"
-        style="width:100%;border:1px solid #c5a56d;border-radius:6px;"
+    const shots = screenshots.slice(0, 6);
+    let current = 0;
+
+    box.innerHTML = shots.map((shot, index) => `
+      <button
+        class="screenshot-thumb"
+        data-index="${index}"
+        style="padding:0;background:none;border:1px solid #c5a56d;cursor:pointer;"
       >
+        <img
+          src="${shot.path_thumbnail}"
+          alt="Game screenshot"
+          loading="lazy"
+          style="display:block;width:100%;border-radius:4px;"
+        >
+      </button>
     `).join("");
+
+    box.querySelectorAll(".screenshot-thumb").forEach(button => {
+      button.addEventListener("click", () => {
+        current = Number(button.dataset.index);
+
+        const viewer = document.createElement("div");
+        viewer.id = "screenshot-viewer";
+
+        viewer.style.cssText = `
+          position:fixed;
+          inset:0;
+          z-index:999999;
+          background:rgba(0,0,0,.96);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:15px;
+        `;
+
+        viewer.innerHTML = `
+          <button data-close style="
+            position:absolute;top:15px;right:18px;
+            color:white;background:none;border:0;
+            font-size:32px;cursor:pointer;
+          ">×</button>
+
+          <button data-prev style="
+            position:absolute;left:10px;
+            color:white;background:#222;
+            border:1px solid #c5a56d;
+            padding:12px;cursor:pointer;
+          ">❮</button>
+
+          <div style="
+            width:100%;height:85%;
+            display:flex;align-items:center;
+            justify-content:center;
+          ">
+            <img id="viewer-image" style="
+              max-width:100%;max-height:100%;
+              object-fit:contain;
+            ">
+          </div>
+
+          <button data-next style="
+            position:absolute;right:10px;
+            color:white;background:#222;
+            border:1px solid #c5a56d;
+            padding:12px;cursor:pointer;
+          ">❯</button>
+
+          <span id="viewer-count" style="
+            position:absolute;bottom:15px;
+            color:#c5a56d;font-size:13px;
+          "></span>
+        `;
+
+        document.body.appendChild(viewer);
+
+        const image = viewer.querySelector("#viewer-image");
+        const count = viewer.querySelector("#viewer-count");
+
+        function updateImage() {
+          image.src = shots[current].path_full;
+          count.textContent = `${current + 1} / ${shots.length}`;
+        }
+
+        function closeViewer() {
+          viewer.remove();
+          document.body.style.overflow = "";
+          document.removeEventListener("keydown", handleKeys);
+        }
+
+        function handleKeys(e) {
+          if (e.key === "Escape") closeViewer();
+          if (e.key === "ArrowRight") nextImage();
+          if (e.key === "ArrowLeft") prevImage();
+        }
+
+        function nextImage() {
+          current = (current + 1) % shots.length;
+          updateImage();
+        }
+
+        function prevImage() {
+          current = (current - 1 + shots.length) % shots.length;
+          updateImage();
+        }
+
+        viewer.querySelector("[data-close]").onclick = closeViewer;
+        viewer.querySelector("[data-next]").onclick = nextImage;
+        viewer.querySelector("[data-prev]").onclick = prevImage;
+
+        let touchStart = 0;
+
+        viewer.addEventListener("touchstart", e => {
+          touchStart = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        viewer.addEventListener("touchend", e => {
+          const difference = e.changedTouches[0].screenX - touchStart;
+
+          if (Math.abs(difference) > 50) {
+            difference < 0 ? nextImage() : prevImage();
+          }
+        }, { passive: true });
+
+        document.body.style.overflow = "hidden";
+        document.addEventListener("keydown", handleKeys);
+
+        updateImage();
+      });
+    });
 
   } catch (error) {
     console.error("Screenshot loading error:", error);
