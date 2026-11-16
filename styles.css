@@ -945,3 +945,15 @@
   text-align: center;
   white-space: nowrap;
 }
+/* ===== GALLERY COUNTER POSITION ===== */
+
+.gallery-count {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  transform: translateX(-50%) !important;
+  width: max-content;
+  text-align: center;
+  z-index: 10;
+}
