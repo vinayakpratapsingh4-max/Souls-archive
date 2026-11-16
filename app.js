@@ -1147,22 +1147,124 @@ async function loadSteamTrailer(id) {
       return;
     }
 
-    const video = document.createElement("video");
+    
+const video = document.createElement("video");
+video.playsInline = true;
+video.preload = "metadata";
+video.poster = movie.thumbnail || "";
+video.className = "sa-video";
 
-    video.controls = true;
-    video.playsInline = true;
-    video.preload = "metadata";
-    video.poster = movie.thumbnail || "";
-    video.style.cssText =
-      "display:block;width:100%;aspect-ratio:16/9;background:#000;border:1px solid #c5a56d;";
+const player = document.createElement("div");
+player.className = "sa-player";
 
-    section.innerHTML = "<h3>OFFICIAL STEAM TRAILER</h3>";
-    section.appendChild(video);
+player.innerHTML = `
+  <button class="sa-big-play" aria-label="Play trailer">▶</button>
 
-    const caption = document.createElement("p");
-    caption.className = "subtle";
-    caption.textContent = movie.name || "Official Steam Trailer";
-    section.appendChild(caption);
+  <div class="sa-controls">
+    <button class="sa-play" aria-label="Play">▶</button>
+    <span class="sa-time">0:00 / 0:00</span>
+
+    <input class="sa-seek" type="range"
+      min="0" max="1000" value="0" aria-label="Seek">
+
+    <button class="sa-mute" aria-label="Mute">♫</button>
+    <input class="sa-volume" type="range"
+      min="0" max="1" step="0.05" value="1" aria-label="Volume">
+
+    <button class="sa-fullscreen" aria-label="Fullscreen">⛶</button>
+  </div>
+`;
+
+player.prepend(video);
+section.innerHTML = "<h3>OFFICIAL STEAM TRAILER</h3>";
+section.appendChild(player);
+
+const playBtn = player.querySelector(".sa-play");
+const bigPlay = player.querySelector(".sa-big-play");
+const seek = player.querySelector(".sa-seek");
+const time = player.querySelector(".sa-time");
+const muteBtn = player.querySelector(".sa-mute");
+const volume = player.querySelector(".sa-volume");
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+function updatePlayState() {
+  playBtn.textContent = video.paused ? "▶" : "Ⅱ";
+  bigPlay.hidden = !video.paused;
+}
+
+function updateTime() {
+  const duration = video.duration || 0;
+  const current = video.currentTime || 0;
+
+  time.textContent =
+    `${formatTime(current)} / ${formatTime(duration)}`;
+
+  seek.value = duration ? (current / duration) * 1000 : 0;
+}
+
+function updateVolume() {
+  muteBtn.textContent =
+    video.muted || video.volume === 0 ? "×" : "♫";
+}
+
+function togglePlay() {
+  if (video.paused) {
+    video.play().catch(() => {});
+  } else {
+    video.pause();
+  }
+}
+
+playBtn.addEventListener("click", togglePlay);
+bigPlay.addEventListener("click", togglePlay);
+video.addEventListener("click", togglePlay);
+
+video.addEventListener("play", updatePlayState);
+video.addEventListener("pause", updatePlayState);
+video.addEventListener("timeupdate", updateTime);
+video.addEventListener("loadedmetadata", updateTime);
+video.addEventListener("volumechange", updateVolume);
+
+seek.addEventListener("input", () => {
+  if (video.duration) {
+    video.currentTime = (seek.value / 1000) * video.duration;
+  }
+});
+
+volume.addEventListener("input", () => {
+  video.volume = Number(volume.value);
+  video.muted = video.volume === 0;
+  updateVolume();
+});
+
+muteBtn.addEventListener("click", () => {
+  video.muted = !video.muted;
+  updateVolume();
+});
+
+player.querySelector(".sa-fullscreen").addEventListener("click", () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else if (player.requestFullscreen) {
+    player.requestFullscreen();
+  } else if (video.webkitEnterFullscreen) {
+    video.webkitEnterFullscreen();
+  }
+});
+
+updatePlayState();
+updateVolume();
+
+const caption = document.createElement("p");
+caption.className = "subtle";
+caption.textContent = movie.name || "Official Steam Trailer";
+section.appendChild(caption);
 
     if (movie.mp4 || movie.webm) {
       const source = document.createElement("source");
