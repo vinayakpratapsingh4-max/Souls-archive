@@ -1,5 +1,4 @@
 
-
 const STEAM_APP_IDS = new Set([
   "1245620", "570940", "335300", "374320",
   "814380", "1888160", "2358720", "1627720",
@@ -17,26 +16,23 @@ export async function onRequest({ params }) {
     );
   }
 
-  const url =
-    `https://store.steampowered.com/api/appdetails` +
-    `?appids=${appid}&cc=in`;
-
   try {
-    const response = await fetch(url, {
-      cf: {
-        cacheTtl: 3600,
-        cacheEverything: true
+    const response = await fetch(
+      `https://store.steampowered.com/api/appdetails?appids=${appid}&cc=in`,
+      {
+        cf: {
+          cacheTtl: 3600,
+          cacheEverything: true
+        }
       }
-    });
+    );
 
-    if (!response.ok) {
-      throw new Error("Steam request failed");
-    }
+    if (!response.ok) throw new Error("Steam request failed");
 
     const result = await response.json();
     const game = result[appid];
 
-    if (!game || !game.success || !game.data) {
+    if (!game?.success || !game.data) {
       return Response.json(
         { error: "Steam data unavailable" },
         { status: 404 }
@@ -62,7 +58,15 @@ export async function onRequest({ params }) {
       screenshots: (data.screenshots || []).map(shot => ({
         thumbnail: shot.path_thumbnail,
         full: shot.path_full
-      }))
+      })),
+
+      movies: (data.movies || []).map(movie => ({
+        name: movie.name,
+        thumbnail: movie.thumbnail,
+        mp4: movie.mp4?.max || movie.mp4?.["480"] || null,
+        webm: movie.webm?.max || movie.webm?.["480"] || null
+      })).filter(movie => movie.mp4 || movie.webm)
+
     }, {
       headers: {
         "Cache-Control": "public, max-age=3600"
