@@ -919,3 +919,111 @@ if (introScreen && enterButton) {
     });
   }
 }
+
+/* ===== SOULS.ARCHIVE MOBILE BACK NAVIGATION ===== */
+
+history.replaceState(
+  { soulsArchive: true, page: "home" },
+  "",
+  location.href
+);
+
+window.__soulsCurrentGameId = null;
+window.__galleryPopClosing = false;
+
+const __soulsOriginalOpenGame = openGame;
+
+openGame = function(id) {
+  window.__soulsCurrentGameId = id;
+
+  if (
+    !history.state?.soulsArchive ||
+    history.state.page !== "detail" ||
+    history.state.gameId !== id
+  ) {
+    history.pushState(
+      { soulsArchive: true, page: "detail", gameId: id },
+      "",
+      location.href
+    );
+  }
+
+  __soulsOriginalOpenGame(id);
+  loadSteamTrailer(id);
+};
+
+// Opening a screenshot creates a gallery history entry.
+document.addEventListener("click", e => {
+  if (e.target.closest(".screenshot-thumb")) {
+    history.pushState(
+      {
+        soulsArchive: true,
+        page: "gallery",
+        gameId: window.__soulsCurrentGameId
+      },
+      "",
+      location.href
+    );
+  }
+}, true);
+
+// Closing with the X returns to the previous internal page.
+document.addEventListener("click", e => {
+  if (
+    e.target.closest(".gallery-close") &&
+    !window.__galleryPopClosing &&
+    history.state?.page === "gallery"
+  ) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    history.back();
+  }
+}, true);
+
+// Escape also uses the internal navigation.
+document.addEventListener("keydown", e => {
+  if (
+    e.key === "Escape" &&
+    document.querySelector(".screenshot-viewer") &&
+    history.state?.page === "gallery"
+  ) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    history.back();
+  }
+}, true);
+
+window.addEventListener("popstate", e => {
+  const state = e.state;
+  const viewer = document.querySelector(".screenshot-viewer");
+
+  if (state?.soulsArchive && state.page === "detail") {
+    if (viewer) {
+      viewer.classList.add("is-closing");
+
+      window.__galleryPopClosing = true;
+
+      setTimeout(() => {
+        const close = viewer.querySelector(".gallery-close");
+        if (close) close.click();
+        window.__galleryPopClosing = false;
+      }, 250);
+    }
+  }
+
+  if (state?.soulsArchive && state.page === "home") {
+    if (viewer) {
+      viewer.classList.add("is-closing");
+      window.__galleryPopClosing = true;
+
+      setTimeout(() => {
+        const close = viewer.querySelector(".gallery-close");
+        if (close) close.click();
+        window.__galleryPopClosing = false;
+        showPage("home-page");
+      }, 250);
+    } else {
+      showPage("home-page");
+    }
+  }
+});
