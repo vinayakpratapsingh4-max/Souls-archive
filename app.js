@@ -386,7 +386,7 @@ async function animateCardOpen(card, gameId) {
 
 function bindCards(root){
   root.querySelectorAll("[data-game]").forEach(card=>{
-    const open=()=>openGame(Number(card.dataset.game));
+    const open=()=>animateCardOpen(card,Number(card.dataset.game));
     card.addEventListener("click",open);
     card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});
   });
