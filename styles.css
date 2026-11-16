@@ -957,3 +957,88 @@
   text-align: center;
   z-index: 10;
 }
+
+/* ===== SOULS.ARCHIVE — CINEMATIC STEAM PLAYER ===== */
+
+#steam-trailer-section {
+  position: relative;
+  margin-top: 32px;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(197, 165, 109, .32);
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(197, 165, 109, .09),
+      transparent 65%
+    ),
+    linear-gradient(145deg, #1a241c, #101711 75%);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, .35),
+    inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+#steam-trailer-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 17px;
+  color: #d5c49b;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 19px;
+  letter-spacing: 1.5px;
+}
+
+#steam-trailer-section h3::before {
+  content: "";
+  width: 3px;
+  height: 23px;
+  background: #c5a56d;
+  box-shadow: 0 0 12px rgba(197, 165, 109, .5);
+}
+
+#steam-trailer-section video {
+  display: block;
+  width: 100% !important;
+  max-height: 560px;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #050706 !important;
+  border: 1px solid rgba(197, 165, 109, .38) !important;
+  border-radius: 9px;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, .45),
+    0 0 22px rgba(197, 165, 109, .06);
+  color-scheme: dark;
+}
+
+#steam-trailer-section video:focus-visible {
+  outline: 2px solid #c5a56d;
+  outline-offset: 4px;
+}
+
+#steam-trailer-section .subtle {
+  margin: 13px 2px 0;
+  color: #a19f8a;
+  font-size: 11px;
+  letter-spacing: .5px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  #steam-trailer-section {
+    padding: 12px;
+    margin-top: 25px;
+    border-radius: 9px;
+  }
+
+  #steam-trailer-section h3 {
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+
+  #steam-trailer-section video {
+    border-radius: 6px;
+  }
+}
