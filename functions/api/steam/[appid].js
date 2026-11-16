@@ -41,7 +41,24 @@ export async function onRequest({ params }) {
 
     const data = game.data;
     const price = data.price_overview;
+const movies = [...(data.detailed_description || "").matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/gi)]
+  .map(match => {
+    const poster = match[1].match(/\bposter=["']([^"']+)["']/i);
+    const sources = [...match[2].matchAll(/<source\b([^>]*)>/gi)];
 
+    const getSource = type => {
+      const source = sources.find(s => new RegExp(`type=["']video/${type}`, "i").test(s[1]));
+      return source?.[1].match(/\bsrc=["']([^"']+)["']/i)?.[1] || null;
+    };
+
+    return {
+      name: "Steam Game Trailer",
+      thumbnail: poster?.[1] || "",
+      mp4: getSource("mp4"),
+      webm: getSource("webm")
+    };
+  })
+  .filter(movie => movie.mp4 || movie.webm);
     return Response.json({
       available: !!price,
       message: price ? undefined : "No price currently listed",
