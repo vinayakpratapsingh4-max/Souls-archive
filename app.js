@@ -358,17 +358,19 @@ async function animateCardOpen(card, gameId) {
 
   document.body.appendChild(curtain);
 
-  // Fade the current page to darkness
   requestAnimationFrame(() => {
     curtain.style.opacity = "1";
   });
 
   await new Promise(resolve => setTimeout(resolve, 370));
 
-  // Open the selected game's detail page
-  openGame(gameId);
+  try {
+    openGame(gameId);
+  } catch (error) {
+    console.error("Game opening error:", error);
+    notify("Unable to open game. Check console.");
+  }
 
-  // Reveal the new page smoothly
   curtain.style.transition = "opacity 700ms ease-in-out";
   curtain.style.pointerEvents = "none";
 
