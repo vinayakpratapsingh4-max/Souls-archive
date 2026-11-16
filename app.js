@@ -576,6 +576,7 @@ const steamAppIds = {
   15: "1030300",
   16: "1809540"
 };
+
 async function loadGameScreenshots(id) {
   const box = document.getElementById("game-screenshots");
   if (!box) return;
@@ -590,12 +591,14 @@ async function loadGameScreenshots(id) {
   box.innerHTML = "<p class='subtle'>Loading screenshots...</p>";
 
   try {
-    const response = await fetch(
-      `https://store.steampowered.com/api/appdetails?appids=${appid}`
-    );
+    const response = await fetch(`/api/steam/${appid}`);
+
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
 
     const data = await response.json();
-    const screenshots = data[appid]?.data?.screenshots || [];
+    const screenshots = data.screenshots || [];
 
     if (!screenshots.length) {
       box.innerHTML = "<p class='subtle'>No screenshots available.</p>";
@@ -604,16 +607,19 @@ async function loadGameScreenshots(id) {
 
     box.innerHTML = screenshots.slice(0, 6).map(shot => `
       <img
-        src="${shot.path_thumbnail}"
+        src="${shot.thumbnail}"
         alt="Game screenshot"
         loading="lazy"
         style="width:100%;border:1px solid #c5a56d;border-radius:6px;"
       >
     `).join("");
+
   } catch (error) {
+    console.error("Screenshot loading error:", error);
     box.innerHTML = "<p class='subtle'>Screenshots couldn't load.</p>";
   }
 }
+
 const gameMedia = {
   1: {
     trailerId: "l6pCyV7PnqI",
