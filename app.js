@@ -1314,3 +1314,173 @@ openGame = function(id) {
   __soulsOriginalOpenGameForTrailer(id);
   loadSteamTrailer(id);
 };
+
+
+/* ===== SOULS.ARCHIVE — STEAM + YOUTUBE TRAILER SYSTEM ===== */
+
+const saYouTubeTrailers = {
+  1: "E3Huy2cdih0",       // Elden Ring
+  2: "KfjG9ZLGBHE",       // Dark Souls Remastered
+  3: "U6uyuIQYlfY",       // Dark Souls 2
+  4: "_zDZYrIUgKE",       // Dark Souls 3
+  5: "2TMs2E6cms4",       // Demon's Souls
+  6: "G203e1HhixY",       // Bloodborne
+  7: "rXMX4YJ7Lks",       // Sekiro
+  8: "kKO1s-CUZvY",       // Armored Core 6
+  9: "u83VdXAVq08",       // Black Myth: Wukong
+  10: "kXZoKdr-xeo",      // Lies of P
+  11: "oceLRiqQsko",      // Lords of the Fallen
+  12: "hHt30e-r-G8",      // Nioh 2
+  13: "xlmdeQFyqC0",      // Wo Long
+  14: "UAO2urG23S4",      // Hollow Knight
+  15: "6XGeJwsUP9c",      // Silksong
+  16: "8AXi3ZZ6VS4"        // Nine Sols
+};
+
+const saOriginalSteamLoader = loadSteamTrailer;
+let saTrailerGameId = null;
+let saTrailerPromise = null;
+
+loadSteamTrailer = function(id) {
+  if (saTrailerGameId === id && saTrailerPromise) {
+    return saTrailerPromise;
+  }
+
+  saTrailerGameId = id;
+
+  saTrailerPromise = (async () => {
+    const detail = document.getElementById("game-detail");
+    if (!detail) return;
+
+    document.getElementById("sa-trailer-carousel")?.remove();
+    document.getElementById("steam-trailer-section")?.remove();
+
+    const section = document.createElement("section");
+    section.id = "sa-trailer-carousel";
+    section.className = "detail-section";
+
+    section.innerHTML = `
+      <h3>TRAILERS</h3>
+
+      <div class="sa-trailer-tabs">
+        <button class="sa-trailer-tab active" data-source="steam">
+          STEAM
+        </button>
+        <button class="sa-trailer-tab" data-source="youtube">
+          YOUTUBE
+        </button>
+      </div>
+
+      <div class="sa-trailer-viewport">
+        <div class="sa-trailer-slide sa-steam-slide">
+          <p class="subtle">Loading Steam trailer...</p>
+        </div>
+
+        <div class="sa-trailer-slide sa-youtube-slide">
+          <div class="sa-youtube-frame">
+            <iframe
+              title="YouTube game trailer"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <p class="sa-trailer-hint">SWIPE TO EXPLORE TRAILERS</p>
+    `;
+
+    const screenshotBox = document.getElementById("game-screenshots");
+    const screenshotSection = screenshotBox?.closest(".detail-section");
+
+    if (screenshotSection) {
+      detail.insertBefore(section, screenshotSection);
+    } else {
+      detail.appendChild(section);
+    }
+
+    const steamSlide = section.querySelector(".sa-steam-slide");
+    const youtubeSlide = section.querySelector(".sa-youtube-slide");
+    const tabs = [...section.querySelectorAll(".sa-trailer-tab")];
+    const iframe = section.querySelector("iframe");
+
+    const videoId = saYouTubeTrailers[id];
+
+    if (videoId) {
+      iframe.src =
+        `https://www.youtube-nocookie.com/embed/${videoId}`;
+    } else {
+      youtubeSlide.innerHTML =
+        '<p class="subtle">YouTube trailer unavailable.</p>';
+    }
+
+    let currentSource = "steam";
+
+    function switchSource(source) {
+      currentSource = source;
+
+      tabs.forEach(tab => {
+        tab.classList.toggle(
+          "active",
+          tab.dataset.source === source
+        );
+      });
+
+      section.classList.toggle(
+        "sa-show-youtube",
+        source === "youtube"
+      );
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        switchSource(tab.dataset.source);
+      });
+    });
+
+    let startX = 0;
+
+    section.querySelector(".sa-trailer-viewport")
+      .addEventListener("touchstart", event => {
+        startX = event.changedTouches[0].screenX;
+      }, { passive: true });
+
+    section.querySelector(".sa-trailer-viewport")
+      .addEventListener("touchend", event => {
+        const difference =
+          event.changedTouches[0].screenX - startX;
+
+        if (Math.abs(difference) < 55) return;
+
+        switchSource(
+          difference < 0 ? "youtube" : "steam"
+        );
+      }, { passive: true });
+
+    if (steamAppIds[id]) {
+      await saOriginalSteamLoader(id);
+
+      if (saTrailerGameId !== id) return;
+
+      const steamSection =
+        document.getElementById("steam-trailer-section");
+
+      if (steamSection) {
+        steamSlide.appendChild(steamSection);
+      } else {
+        steamSlide.innerHTML =
+          '<p class="subtle">Steam trailer unavailable.</p>';
+      }
+    } else {
+      steamSlide.innerHTML =
+        '<p class="subtle">No Steam version available for this game.</p>';
+    }
+
+    switchSource("steam");
+  })();
+
+  return saTrailerPromise;
+};
+
+console.log("SOULS.ARCHIVE trailer system loaded.");
