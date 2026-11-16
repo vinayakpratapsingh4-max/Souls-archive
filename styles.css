@@ -933,3 +933,15 @@
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
+/* ===== GALLERY COUNTER: BOTTOM CENTRE ===== */
+
+.gallery-count {
+  left: 50%;
+  right: auto;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 4;
+  text-align: center;
+  white-space: nowrap;
+}
