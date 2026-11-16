@@ -912,3 +912,24 @@
   box-sizing: border-box;
 }
 
+
+/* ===== SCREENSHOT GALLERY FADE ===== */
+
+.screenshot-viewer {
+  animation: galleryFadeIn .25s ease both;
+}
+
+.screenshot-viewer.is-closing {
+  animation: galleryFadeOut .25s ease both;
+  pointer-events: none;
+}
+
+@keyframes galleryFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes galleryFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
