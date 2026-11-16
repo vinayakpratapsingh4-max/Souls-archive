@@ -1739,3 +1739,50 @@ if (steamSection) {
 };
 
 console.log("SOULS.ARCHIVE FINAL TRAILER SYSTEM LOADED.");
+
+/* ===== SOULS.ARCHIVE — STEAM PLAYER DISPLAY FIX ===== */
+
+const saPreviousTrailerLoader = loadSteamTrailer;
+
+loadSteamTrailer = function(id) {
+  const result = saPreviousTrailerLoader(id);
+
+  Promise.resolve(result).then(() => {
+    const carousel = document.getElementById("sa-trailer-carousel");
+    const steamSlide = carousel?.querySelector(".sa-steam-slide");
+    const steamSection = document.getElementById("steam-trailer-section");
+    const player = steamSection?.querySelector(".sa-player");
+
+    if (!carousel || !steamSlide || !player) return;
+
+    player.style.cssText += `
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      overflow: hidden;
+    `;
+
+    steamSlide.innerHTML = "";
+    steamSlide.appendChild(player);
+
+    const video = player.querySelector("video");
+
+    if (video) {
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.objectFit = "contain";
+    }
+  }).catch(error => {
+    console.warn("Steam player display fix:", error);
+  });
+
+  return result;
+};
+
+console.log("SOULS.ARCHIVE Steam display fix loaded.");
+
