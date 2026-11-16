@@ -472,6 +472,13 @@ const media = gameMedia[id] || {};
       </div>
     </section>
     ` : ""}
+<section class="detail-section">
+  <h3>SCREENSHOTS</h3>
+  <div id="game-screenshots"
+       style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+    <p class="subtle">Loading screenshots...</p>
+  </div>
+</section>
     <section class="detail-section">
       <h3>PLATFORM AVAILABILITY</h3>
       <div class="pills">
@@ -551,6 +558,7 @@ $("complete-game").addEventListener("click", () => {
 
   showPage("detail-page");
   loadSteamPrice(id);
+  loadGameScreenshots(id);
 }
 const steamAppIds = {
   1: "1245620",
