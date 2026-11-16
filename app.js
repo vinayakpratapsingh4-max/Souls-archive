@@ -1584,38 +1584,38 @@ loadSteamTrailer = function(id) {
       );
     }
 
-    function startYouTube() {
-      if (
-        currentSource !== "youtube" ||
-        !isVisible ||
-        !videoId ||
-        !section.isConnected
-      ) return;
+    function startYouTube(userInitiated = false) {
+  if (
+    currentSource !== "youtube" ||
+    !isVisible ||
+    !videoId ||
+    !section.isConnected
+  ) return;
 
-      if (!youtubeStarted) {
-        iframe.src =
-          `https://www.youtube-nocookie.com/embed/${videoId}` +
-          `?autoplay=1&mute=1&playsinline=1` +
-          `&controls=1&enablejsapi=1`;
+  if (!youtubeStarted) {
+    iframe.src =
+      `https://www.youtube-nocookie.com/embed/${videoId}` +
+      `?autoplay=1&mute=${userInitiated ? 0 : 1}` +
+      `&playsinline=1&controls=1&enablejsapi=1`;
 
-        youtubeStarted = true;
-      } else if (iframe.contentWindow) {
-        iframe.contentWindow.postMessage(
-          JSON.stringify({
-            event: "command",
-            func: "playVideo",
-            args: []
-          }),
-          "*"
-        );
-      }
-    }
+    youtubeStarted = true;
+  } else if (iframe.contentWindow) {
+    iframe.contentWindow.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: userInitiated ? "unMute" : "playVideo",
+        args: []
+      }),
+      "*"
+    );
+  }
+}
 
     function switchSource(source) {
       if (youtubeOnly) source = "youtube";
 
       if (source === currentSource) {
-        if (source === "youtube") startYouTube();
+        if (source === "youtube") startYouTube(true);
         return;
       }
 
@@ -1667,7 +1667,7 @@ loadSteamTrailer = function(id) {
         if (Math.abs(difference) < 55) return;
 
         switchSource(
-          difference < 0 ? "youtube" : "steam"
+          difference > 0 ? "youtube" : "steam"
         );
       }, { passive: true });
     }
@@ -1708,10 +1708,11 @@ loadSteamTrailer = function(id) {
 
       const steamSection =
         document.getElementById("steam-trailer-section");
-
-      if (steamSection) {
-        steamSlide.appendChild(steamSection);
-      } else {
+if (steamSection) {
+  steamSlide.innerHTML = "";
+  steamSlide.appendChild(steamSection);
+}
+       else {
         steamSlide.innerHTML =
           '<p class="subtle">Steam trailer unavailable.</p>';
       }
