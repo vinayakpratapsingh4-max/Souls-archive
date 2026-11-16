@@ -443,7 +443,6 @@ function openGame(id) {
 
   const details = (typeof gameDetails !== "undefined" && gameDetails[id]) || {};
   const saved = wishlist.includes(id);
-const media = gameMedia[id] || {};
   $("game-detail").innerHTML = `
     <img class="detail-cover" src="${game.image}" alt="${game.name}">
 
