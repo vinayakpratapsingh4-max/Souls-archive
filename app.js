@@ -581,6 +581,7 @@ const steamAppIds = {
 
 
 
+
 async function loadGameScreenshots(id) {
   const box = document.getElementById("game-screenshots");
   if (!box) return;
@@ -615,13 +616,16 @@ async function loadGameScreenshots(id) {
     box.querySelectorAll(".screenshot-thumb").forEach(button => {
       button.addEventListener("click", () => {
         let current = Number(button.dataset.index);
+        let startX = 0;
+        let dragX = 0;
+        let dragging = false;
 
         const viewer = document.createElement("div");
         viewer.className = "screenshot-viewer";
 
         viewer.innerHTML = `
-          <button class="gallery-close" aria-label="Close">×</button>
-
+          <button class="gallery-close">×</button>
+          <button class="gallery-arrow gallery-prev">‹</button>
           <div class="gallery-stage">
             <div class="gallery-track">
               ${shots.map(shot => `
@@ -631,10 +635,7 @@ async function loadGameScreenshots(id) {
               `).join("")}
             </div>
           </div>
-
-          <button class="gallery-arrow gallery-prev" aria-label="Previous">‹</button>
-          <button class="gallery-arrow gallery-next" aria-label="Next">›</button>
-
+          <button class="gallery-arrow gallery-next">›</button>
           <span class="gallery-count"></span>
         `;
 
@@ -645,18 +646,25 @@ async function loadGameScreenshots(id) {
         const track = viewer.querySelector(".gallery-track");
         const count = viewer.querySelector(".gallery-count");
 
-        function update(animate = true) {
+        function render(animate = true) {
           track.style.transition = animate
-            ? "transform 420ms cubic-bezier(.22,.75,.25,1)"
+            ? "transform 350ms cubic-bezier(.22,.61,.36,1)"
             : "none";
 
-          track.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
+          track.style.transform =
+            `translate3d(${-current * 100}%,0,0)`;
+
           count.textContent = `${current + 1} / ${shots.length}`;
         }
 
-        function move(direction) {
-          current = Math.max(0, Math.min(shots.length - 1, current + direction));
-          update(true);
+        function next() {
+          current = (current + 1) % shots.length;
+          render();
+        }
+
+        function previous() {
+          current = (current - 1 + shots.length) % shots.length;
+          render();
         }
 
         function close() {
@@ -667,25 +675,18 @@ async function loadGameScreenshots(id) {
 
         function keys(e) {
           if (e.key === "Escape") close();
-          if (e.key === "ArrowRight") move(1);
-          if (e.key === "ArrowLeft") move(-1);
+          if (e.key === "ArrowRight") next();
+          if (e.key === "ArrowLeft") previous();
         }
 
         viewer.querySelector(".gallery-close").onclick = close;
-        viewer.querySelector(".gallery-prev").onclick = () => move(-1);
-        viewer.querySelector(".gallery-next").onclick = () => move(1);
-
-        let startX = 0;
-        let dragX = 0;
-        let dragging = false;
+        viewer.querySelector(".gallery-next").onclick = next;
+        viewer.querySelector(".gallery-prev").onclick = previous;
 
         stage.addEventListener("pointerdown", e => {
-          if (e.target.closest("button")) return;
-
-          dragging = true;
           startX = e.clientX;
           dragX = 0;
-
+          dragging = true;
           track.style.transition = "none";
           stage.setPointerCapture(e.pointerId);
         });
@@ -695,21 +696,23 @@ async function loadGameScreenshots(id) {
 
           dragX = e.clientX - startX;
 
+          const width = stage.clientWidth;
+          const offset = -current * width + dragX;
+
           track.style.transform =
-            `translate3d(calc(-${current * 100}% + ${dragX}px), 0, 0)`;
+            `translate3d(${offset}px,0,0)`;
         });
 
         function finishDrag() {
           if (!dragging) return;
           dragging = false;
 
-          if (Math.abs(dragX) > 55) {
-            move(dragX < 0 ? 1 : -1);
+          if (Math.abs(dragX) > stage.clientWidth * 0.18) {
+            if (dragX < 0) next();
+            else previous();
           } else {
-            update(true);
+            render();
           }
-
-          dragX = 0;
         }
 
         stage.addEventListener("pointerup", finishDrag);
@@ -717,15 +720,17 @@ async function loadGameScreenshots(id) {
 
         document.addEventListener("keydown", keys);
 
-        update(false);
+        render(false);
       });
     });
 
   } catch (error) {
     console.error("Screenshot loading error:", error);
-    box.innerHTML = "<p class='subtle'>Screenshots couldn't load.</p>";
+    box.innerHTML =
+      "<p class='subtle'>Screenshots couldn't load.</p>";
   }
 }
+
 
 
 async function loadSteamPrice(id) {
