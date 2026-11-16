@@ -578,6 +578,7 @@ const steamAppIds = {
 };
 
 
+
 async function loadGameScreenshots(id) {
   const box = document.getElementById("game-screenshots");
   if (!box) return;
@@ -593,145 +594,128 @@ async function loadGameScreenshots(id) {
 
   try {
     const response = await fetch(`/api/steam/${appid}`);
+    if (!response.ok) throw new Error("API request failed");
 
-if (!response.ok) throw new Error("API request failed");
+    const data = await response.json();
+    const shots = (data.screenshots || []).slice(0, 6);
 
-const data = await response.json();
-const screenshots = data.screenshots || [];
-
-    if (!screenshots.length) {
+    if (!shots.length) {
       box.innerHTML = "<p class='subtle'>No screenshots available.</p>";
       return;
     }
 
-    const shots = screenshots.slice(0, 6);
-    let current = 0;
-
     box.innerHTML = shots.map((shot, index) => `
-      <button
-        class="screenshot-thumb"
-        data-index="${index}"
-        style="padding:0;background:none;border:1px solid #c5a56d;cursor:pointer;"
-      >
-        <img
-          src="${shot.thumbnail}"
-          alt="Game screenshot"
-          loading="lazy"
-          style="display:block;width:100%;border-radius:4px;"
-        >
+      <button class="screenshot-thumb" data-index="${index}">
+        <img src="${shot.thumbnail}" alt="Game screenshot" loading="lazy">
       </button>
     `).join("");
 
     box.querySelectorAll(".screenshot-thumb").forEach(button => {
       button.addEventListener("click", () => {
-        current = Number(button.dataset.index);
+        let current = Number(button.dataset.index);
 
         const viewer = document.createElement("div");
-        viewer.id = "screenshot-viewer";
-
-        viewer.style.cssText = `
-          position:fixed;
-          inset:0;
-          z-index:999999;
-          background:rgba(0,0,0,.96);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          padding:15px;
-        `;
+        viewer.className = "screenshot-viewer";
 
         viewer.innerHTML = `
-          <button data-close style="
-            position:absolute;top:15px;right:18px;
-            color:white;background:none;border:0;
-            font-size:32px;cursor:pointer;
-          ">×</button>
+          <button class="gallery-close" aria-label="Close">×</button>
 
-          <button data-prev style="
-            position:absolute;left:10px;
-            color:white;background:#222;
-            border:1px solid #c5a56d;
-            padding:12px;cursor:pointer;
-          ">❮</button>
-
-          <div style="
-            width:100%;height:85%;
-            display:flex;align-items:center;
-            justify-content:center;
-          ">
-            <img id="viewer-image" style="
-              max-width:100%;max-height:100%;
-              object-fit:contain;
-            ">
+          <div class="gallery-stage">
+            <div class="gallery-track">
+              ${shots.map(shot => `
+                <div class="gallery-slide">
+                  <img src="${shot.full}" alt="Game screenshot">
+                </div>
+              `).join("")}
+            </div>
           </div>
 
-          <button data-next style="
-            position:absolute;right:10px;
-            color:white;background:#222;
-            border:1px solid #c5a56d;
-            padding:12px;cursor:pointer;
-          ">❯</button>
+          <button class="gallery-arrow gallery-prev" aria-label="Previous">‹</button>
+          <button class="gallery-arrow gallery-next" aria-label="Next">›</button>
 
-          <span id="viewer-count" style="
-            position:absolute;bottom:15px;
-            color:#c5a56d;font-size:13px;
-          "></span>
+          <span class="gallery-count"></span>
         `;
 
         document.body.appendChild(viewer);
+        document.body.style.overflow = "hidden";
 
-        const image = viewer.querySelector("#viewer-image");
-        const count = viewer.querySelector("#viewer-count");
+        const stage = viewer.querySelector(".gallery-stage");
+        const track = viewer.querySelector(".gallery-track");
+        const count = viewer.querySelector(".gallery-count");
 
-        function updateImage() {
-          image.src = shots[current].full;
+        function update(animate = true) {
+          track.style.transition = animate
+            ? "transform 420ms cubic-bezier(.22,.75,.25,1)"
+            : "none";
+
+          track.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
           count.textContent = `${current + 1} / ${shots.length}`;
         }
 
-        function closeViewer() {
+        function move(direction) {
+          current = Math.max(0, Math.min(shots.length - 1, current + direction));
+          update(true);
+        }
+
+        function close() {
           viewer.remove();
           document.body.style.overflow = "";
-          document.removeEventListener("keydown", handleKeys);
+          document.removeEventListener("keydown", keys);
         }
 
-        function handleKeys(e) {
-          if (e.key === "Escape") closeViewer();
-          if (e.key === "ArrowRight") nextImage();
-          if (e.key === "ArrowLeft") prevImage();
+        function keys(e) {
+          if (e.key === "Escape") close();
+          if (e.key === "ArrowRight") move(1);
+          if (e.key === "ArrowLeft") move(-1);
         }
 
-        function nextImage() {
-          current = (current + 1) % shots.length;
-          updateImage();
-        }
+        viewer.querySelector(".gallery-close").onclick = close;
+        viewer.querySelector(".gallery-prev").onclick = () => move(-1);
+        viewer.querySelector(".gallery-next").onclick = () => move(1);
 
-        function prevImage() {
-          current = (current - 1 + shots.length) % shots.length;
-          updateImage();
-        }
+        let startX = 0;
+        let dragX = 0;
+        let dragging = false;
 
-        viewer.querySelector("[data-close]").onclick = closeViewer;
-        viewer.querySelector("[data-next]").onclick = nextImage;
-        viewer.querySelector("[data-prev]").onclick = prevImage;
+        stage.addEventListener("pointerdown", e => {
+          if (e.target.closest("button")) return;
 
-        let touchStart = 0;
+          dragging = true;
+          startX = e.clientX;
+          dragX = 0;
 
-        viewer.addEventListener("touchstart", e => {
-          touchStart = e.changedTouches[0].screenX;
-        }, { passive: true });
+          track.style.transition = "none";
+          stage.setPointerCapture(e.pointerId);
+        });
 
-        viewer.addEventListener("touchend", e => {
-          const difference = e.changedTouches[0].screenX - touchStart;
+        stage.addEventListener("pointermove", e => {
+          if (!dragging) return;
 
-          if (Math.abs(difference) > 50) {
-            difference < 0 ? nextImage() : prevImage();
+          dragX = e.clientX - startX;
+
+          track.style.transform =
+            `translate3d(calc(-${current * 100}% + ${dragX}px), 0, 0)`;
+        });
+
+        function finishDrag() {
+          if (!dragging) return;
+          dragging = false;
+
+          if (Math.abs(dragX) > 55) {
+            move(dragX < 0 ? 1 : -1);
+          } else {
+            update(true);
           }
-        }, { passive: true });
 
-        document.body.style.overflow = "hidden";
-        document.addEventListener("keydown", handleKeys);
+          dragX = 0;
+        }
 
-        updateImage();
+        stage.addEventListener("pointerup", finishDrag);
+        stage.addEventListener("pointercancel", finishDrag);
+
+        document.addEventListener("keydown", keys);
+
+        update(false);
       });
     });
 
@@ -741,14 +725,6 @@ const screenshots = data.screenshots || [];
   }
 }
 
-const gameMedia = {
-  1: {
-    trailerId: "l6pCyV7PnqI",
-    screenshotSource: "steam",
-    manualScreenshots: []
-  }
-};
-  
 
 async function loadSteamPrice(id) {
   const appid = steamAppIds[id];
