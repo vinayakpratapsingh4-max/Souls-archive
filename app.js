@@ -1100,3 +1100,115 @@ async function loadSteamTrailer(id) {
     `;
   }
 }
+
+/* ===== STEAM HLS TRAILERS ===== */
+
+async function loadSteamTrailer(id) {
+  const appid = steamAppIds[id];
+  const detail = document.getElementById("game-detail");
+
+  if (!appid || !detail) return;
+
+  const old = document.getElementById("steam-trailer-section");
+  if (old) old.remove();
+
+  const section = document.createElement("section");
+  section.id = "steam-trailer-section";
+  section.className = "detail-section";
+
+  section.innerHTML = `
+    <h3>OFFICIAL STEAM TRAILER</h3>
+    <p class="subtle">Loading Steam trailer...</p>
+  `;
+
+  const screenshotBox = document.getElementById("game-screenshots");
+  const screenshotSection = screenshotBox?.closest(".detail-section");
+
+  if (screenshotSection) {
+    detail.insertBefore(section, screenshotSection);
+  } else {
+    detail.appendChild(section);
+  }
+
+  try {
+    const response = await fetch(`/api/steam/${appid}`);
+    if (!response.ok) throw new Error("Steam API error");
+
+    const data = await response.json();
+    const movie = (data.movies || []).find(
+      m => m.hls || m.mp4 || m.webm
+    );
+
+    if (!movie) {
+      section.innerHTML = `
+        <h3>OFFICIAL STEAM TRAILER</h3>
+        <p class="subtle">No Steam trailer found for this game.</p>
+      `;
+      return;
+    }
+
+    const video = document.createElement("video");
+
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+    video.poster = movie.thumbnail || "";
+    video.style.cssText =
+      "display:block;width:100%;aspect-ratio:16/9;background:#000;border:1px solid #c5a56d;";
+
+    section.innerHTML = "<h3>OFFICIAL STEAM TRAILER</h3>";
+    section.appendChild(video);
+
+    const caption = document.createElement("p");
+    caption.className = "subtle";
+    caption.textContent = movie.name || "Official Steam Trailer";
+    section.appendChild(caption);
+
+    if (movie.mp4 || movie.webm) {
+      const source = document.createElement("source");
+      source.src = movie.mp4 || movie.webm;
+      source.type = movie.mp4 ? "video/mp4" : "video/webm";
+      video.appendChild(source);
+      video.load();
+      return;
+    }
+
+    if (movie.hls) {
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = movie.hls;
+      } else {
+        if (!window.Hls) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/hls.js@latest";
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+
+        if (window.Hls && Hls.isSupported()) {
+          const player = new Hls();
+          player.loadSource(movie.hls);
+          player.attachMedia(video);
+        } else {
+          throw new Error("HLS playback is not supported");
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error("Steam trailer error:", error);
+    section.innerHTML = `
+      <h3>OFFICIAL STEAM TRAILER</h3>
+      <p class="subtle">Unable to play the Steam trailer.</p>
+    `;
+  }
+}
+
+const __soulsOriginalOpenGameForTrailer = openGame;
+
+openGame = function(id) {
+  __soulsOriginalOpenGameForTrailer(id);
+  loadSteamTrailer(id);
+};
