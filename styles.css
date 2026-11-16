@@ -1243,3 +1243,94 @@
     gap: 9px !important;
   }
 }
+
+/* ===== SOULS.ARCHIVE — TRAILER CAROUSEL ===== */
+
+#sa-trailer-carousel {
+  margin-top: 30px;
+}
+
+.sa-trailer-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.sa-trailer-tab {
+  flex: 1;
+  padding: 12px;
+  color: #a19f8a;
+  background: #172019;
+  border: 1px solid #394638;
+  border-radius: 5px;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: .25s ease;
+}
+
+.sa-trailer-tab.active {
+  color: #e8e2cf;
+  background: linear-gradient(135deg, #29382a, #172019);
+  border-color: #c5a56d;
+  box-shadow: inset 0 -2px #c5a56d;
+}
+
+.sa-trailer-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9px;
+  touch-action: pan-y;
+}
+
+.sa-trailer-slide {
+  display: none;
+  width: 100%;
+  min-width: 0;
+}
+
+#sa-trailer-carousel:not(.sa-show-youtube)
+.sa-steam-slide {
+  display: block;
+}
+
+#sa-trailer-carousel.sa-show-youtube
+.sa-youtube-slide {
+  display: block;
+}
+
+.sa-youtube-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #050706;
+  border: 1px solid rgba(197,165,109,.55);
+  border-radius: 9px;
+  box-shadow: 0 12px 35px #0008;
+}
+
+.sa-youtube-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.sa-trailer-hint {
+  margin-top: 12px;
+  color: #a19f8a;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 600px) {
+  .sa-trailer-tab {
+    padding: 11px 6px;
+    font-size: 10px;
+  }
+}
