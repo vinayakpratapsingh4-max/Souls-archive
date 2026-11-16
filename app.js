@@ -1316,32 +1316,180 @@ openGame = function(id) {
 };
 
 
-/* ===== SOULS.ARCHIVE — STEAM + YOUTUBE TRAILER SYSTEM ===== */
+
+/* =====================================================
+   SOULS.ARCHIVE — FINAL TRAILER SYSTEM
+   STEAM + YOUTUBE + AUTOPLAY + CINEMATIC TRANSITIONS
+===================================================== */
 
 const saYouTubeTrailers = {
-  1: "E3Huy2cdih0",       // Elden Ring
-  2: "KfjG9ZLGBHE",       // Dark Souls Remastered
-  3: "U6uyuIQYlfY",       // Dark Souls 2
-  4: "_zDZYrIUgKE",       // Dark Souls 3
-  5: "2TMs2E6cms4",       // Demon's Souls
-  6: "G203e1HhixY",       // Bloodborne
-  7: "rXMX4YJ7Lks",       // Sekiro
-  8: "kKO1s-CUZvY",       // Armored Core 6
-  9: "u83VdXAVq08",       // Black Myth: Wukong
-  10: "kXZoKdr-xeo",      // Lies of P
-  11: "oceLRiqQsko",      // Lords of the Fallen
-  12: "hHt30e-r-G8",      // Nioh 2
-  13: "xlmdeQFyqC0",      // Wo Long
-  14: "UAO2urG23S4",      // Hollow Knight
-  15: "6XGeJwsUP9c",      // Silksong
-  16: "8AXi3ZZ6VS4"        // Nine Sols
+  1: "E3Huy2cdih0",
+  2: "KfjG9ZLGBHE",
+  3: "U6uyuIQYlfY",
+  4: "_zDZYrIUgKE",
+  5: "2TMs2E6cms4",
+  6: "G203e1HhixY",
+  7: "rXMX4YJ7Lks",
+  8: "kKO1s-CUZvY",
+  9: "u83VdXAVq08",
+  10: "kXZoKdr-xeo",
+  11: "oceLRiqQsko",
+  12: "hHt30e-r-G8",
+  13: "xlmdeQFyqC0",
+  14: "UAO2urG23S4",
+  15: "6XGeJwsUP9c",
+  16: "8AXi3ZZ6VS4"
 };
 
+// YouTube-only games
+const saYouTubeOnly = new Set([5, 6, 7, 15]);
+
+// Preserve the original Steam player
 const saOriginalSteamLoader = loadSteamTrailer;
+
 let saTrailerGameId = null;
 let saTrailerPromise = null;
 
+// Cinematic trailer styling
+if (!document.getElementById("sa-final-trailer-style")) {
+  const style = document.createElement("style");
+  style.id = "sa-final-trailer-style";
+
+  style.textContent = `
+    #sa-trailer-carousel {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #sa-trailer-carousel .sa-trailer-tabs {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    #sa-trailer-carousel .sa-trailer-tab {
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+
+    #sa-trailer-carousel .sa-trailer-tab.active {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    #sa-trailer-carousel .sa-trailer-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #080808;
+      border-radius: 12px;
+      isolation: isolate;
+    }
+
+    #sa-trailer-carousel .sa-trailer-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(25px) scale(.985);
+      transition:
+        opacity .65s ease,
+        transform .75s cubic-bezier(.22,1,.36,1),
+        visibility .65s;
+    }
+
+    #sa-trailer-carousel:not(.sa-show-youtube)
+    .sa-steam-slide {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+    }
+
+    #sa-trailer-carousel.sa-show-youtube
+    .sa-youtube-slide {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+    }
+
+    #sa-trailer-carousel.sa-show-youtube
+    .sa-steam-slide {
+      transform: translateX(-25px) scale(.985);
+    }
+
+    #sa-trailer-carousel:not(.sa-show-youtube)
+    .sa-youtube-slide {
+      transform: translateX(25px) scale(.985);
+    }
+
+    #sa-trailer-carousel .sa-youtube-frame,
+    #sa-trailer-carousel iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    #sa-trailer-carousel .sa-trailer-viewport::after {
+      content: "";
+      position: absolute;
+      inset: -100% -50%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      transform: translateX(-65%) rotate(18deg);
+      background: linear-gradient(
+        90deg,
+        transparent 35%,
+        rgba(255,255,255,.04) 45%,
+        rgba(255,255,255,.23) 50%,
+        rgba(255,255,255,.04) 55%,
+        transparent 65%
+      );
+    }
+
+    #sa-trailer-carousel.sa-light-sweep
+    .sa-trailer-viewport::after {
+      animation: saLightSweep 1s ease forwards;
+    }
+
+    @keyframes saLightSweep {
+      0% {
+        opacity: 0;
+        transform: translateX(-65%) rotate(18deg);
+      }
+      25% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateX(65%) rotate(18deg);
+      }
+    }
+
+    #sa-trailer-carousel .sa-trailer-hint {
+      opacity: .55;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-top: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #sa-trailer-carousel *,
+      #sa-trailer-carousel::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
 loadSteamTrailer = function(id) {
+  id = Number(id);
+
   if (saTrailerGameId === id && saTrailerPromise) {
     return saTrailerPromise;
   }
@@ -1355,6 +1503,10 @@ loadSteamTrailer = function(id) {
     document.getElementById("sa-trailer-carousel")?.remove();
     document.getElementById("steam-trailer-section")?.remove();
 
+    const youtubeOnly = saYouTubeOnly.has(id);
+    const hasSteam = !!steamAppIds[id] && !youtubeOnly;
+    const videoId = saYouTubeTrailers[id];
+
     const section = document.createElement("section");
     section.id = "sa-trailer-carousel";
     section.className = "detail-section";
@@ -1362,14 +1514,16 @@ loadSteamTrailer = function(id) {
     section.innerHTML = `
       <h3>TRAILERS</h3>
 
-      <div class="sa-trailer-tabs">
-        <button class="sa-trailer-tab active" data-source="steam">
-          STEAM
-        </button>
-        <button class="sa-trailer-tab" data-source="youtube">
-          YOUTUBE
-        </button>
-      </div>
+      ${youtubeOnly ? `
+        <p class="sa-trailer-hint">YOUTUBE EXCLUSIVE</p>
+      ` : `
+        <div class="sa-trailer-tabs">
+          <button class="sa-trailer-tab active"
+            data-source="steam">STEAM</button>
+          <button class="sa-trailer-tab"
+            data-source="youtube">YOUTUBE</button>
+        </div>
+      `}
 
       <div class="sa-trailer-viewport">
         <div class="sa-trailer-slide sa-steam-slide">
@@ -1379,7 +1533,7 @@ loadSteamTrailer = function(id) {
         <div class="sa-trailer-slide sa-youtube-slide">
           <div class="sa-youtube-frame">
             <iframe
-              title="YouTube game trailer"
+              title="Game trailer"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -1388,7 +1542,9 @@ loadSteamTrailer = function(id) {
         </div>
       </div>
 
-      <p class="sa-trailer-hint">SWIPE TO EXPLORE TRAILERS</p>
+      <p class="sa-trailer-hint">
+        ${youtubeOnly ? "OFFICIAL GAME TRAILER" : "SWITCH TRAILER SOURCE"}
+      </p>
     `;
 
     const screenshotBox = document.getElementById("game-screenshots");
@@ -1402,22 +1558,71 @@ loadSteamTrailer = function(id) {
 
     const steamSlide = section.querySelector(".sa-steam-slide");
     const youtubeSlide = section.querySelector(".sa-youtube-slide");
-    const tabs = [...section.querySelectorAll(".sa-trailer-tab")];
     const iframe = section.querySelector("iframe");
+    const viewport = section.querySelector(".sa-trailer-viewport");
+    const tabs = [...section.querySelectorAll(".sa-trailer-tab")];
 
-    const videoId = saYouTubeTrailers[id];
+    let currentSource = youtubeOnly ? "youtube" : "steam";
+    let isVisible = false;
+    let youtubeStarted = false;
 
-    if (videoId) {
-      iframe.src =
-        `https://www.youtube-nocookie.com/embed/${videoId}`;
-    } else {
+    if (!videoId) {
       youtubeSlide.innerHTML =
         '<p class="subtle">YouTube trailer unavailable.</p>';
     }
 
-    let currentSource = "steam";
+    function pauseYouTube() {
+      if (!youtubeStarted || !iframe.contentWindow) return;
+
+      iframe.contentWindow.postMessage(
+        JSON.stringify({
+          event: "command",
+          func: "pauseVideo",
+          args: []
+        }),
+        "*"
+      );
+    }
+
+    function startYouTube() {
+      if (
+        currentSource !== "youtube" ||
+        !isVisible ||
+        !videoId ||
+        !section.isConnected
+      ) return;
+
+      if (!youtubeStarted) {
+        iframe.src =
+          `https://www.youtube-nocookie.com/embed/${videoId}` +
+          `?autoplay=1&mute=1&playsinline=1` +
+          `&controls=1&enablejsapi=1`;
+
+        youtubeStarted = true;
+      } else if (iframe.contentWindow) {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({
+            event: "command",
+            func: "playVideo",
+            args: []
+          }),
+          "*"
+        );
+      }
+    }
 
     function switchSource(source) {
+      if (youtubeOnly) source = "youtube";
+
+      if (source === currentSource) {
+        if (source === "youtube") startYouTube();
+        return;
+      }
+
+      if (currentSource === "youtube") {
+        pauseYouTube();
+      }
+
       currentSource = source;
 
       tabs.forEach(tab => {
@@ -1431,6 +1636,14 @@ loadSteamTrailer = function(id) {
         "sa-show-youtube",
         source === "youtube"
       );
+
+      section.classList.remove("sa-light-sweep");
+      void section.offsetWidth;
+      section.classList.add("sa-light-sweep");
+
+      if (source === "youtube") {
+        startYouTube();
+      }
     }
 
     tabs.forEach(tab => {
@@ -1439,15 +1652,15 @@ loadSteamTrailer = function(id) {
       });
     });
 
+    // Mobile swipe switching
     let startX = 0;
 
-    section.querySelector(".sa-trailer-viewport")
-      .addEventListener("touchstart", event => {
+    if (!youtubeOnly) {
+      viewport.addEventListener("touchstart", event => {
         startX = event.changedTouches[0].screenX;
       }, { passive: true });
 
-    section.querySelector(".sa-trailer-viewport")
-      .addEventListener("touchend", event => {
+      viewport.addEventListener("touchend", event => {
         const difference =
           event.changedTouches[0].screenX - startX;
 
@@ -1457,11 +1670,41 @@ loadSteamTrailer = function(id) {
           difference < 0 ? "youtube" : "steam"
         );
       }, { passive: true });
+    }
 
-    if (steamAppIds[id]) {
+    // Autoplay only when trailer section is visible
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          isVisible = entry.isIntersecting &&
+            entry.intersectionRatio >= 0.35;
+
+          if (isVisible) {
+            startYouTube();
+          } else {
+            pauseYouTube();
+          }
+        });
+      }, { threshold: [0, 0.35, 0.6] });
+
+      observer.observe(section);
+    } else {
+      isVisible = true;
+    }
+
+    // Initial source
+    if (youtubeOnly) {
+      section.classList.add("sa-show-youtube");
+    }
+
+    // Load original Steam player without changing its controls
+    if (hasSteam) {
       await saOriginalSteamLoader(id);
 
-      if (saTrailerGameId !== id) return;
+      if (
+        saTrailerGameId !== id ||
+        !section.isConnected
+      ) return;
 
       const steamSection =
         document.getElementById("steam-trailer-section");
@@ -1474,13 +1717,16 @@ loadSteamTrailer = function(id) {
       }
     } else {
       steamSlide.innerHTML =
-        '<p class="subtle">No Steam version available for this game.</p>';
+        '<p class="subtle">No Steam trailer option for this game.</p>';
     }
 
-    switchSource("steam");
+    if (youtubeOnly) {
+      startYouTube();
+    }
+
   })();
 
   return saTrailerPromise;
 };
 
-console.log("SOULS.ARCHIVE trailer system loaded.");
+console.log("SOULS.ARCHIVE FINAL TRAILER SYSTEM LOADED.");
