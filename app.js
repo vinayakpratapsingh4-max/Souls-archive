@@ -1027,3 +1027,76 @@ window.addEventListener("popstate", e => {
     }
   }
 });
+
+
+/* ===== OFFICIAL STEAM TRAILERS ===== */
+
+async function loadSteamTrailer(id) {
+  const appid = steamAppIds[id];
+  const detail = document.getElementById("game-detail");
+  const screenshots = document.getElementById("game-screenshots");
+
+  if (!detail || !screenshots) return;
+
+  const oldSection = document.getElementById("steam-trailer-section");
+  if (oldSection) oldSection.remove();
+
+  if (!appid) return;
+
+  const section = document.createElement("section");
+  section.id = "steam-trailer-section";
+  section.className = "detail-section";
+
+  section.innerHTML = `
+    <h3>OFFICIAL STEAM TRAILER</h3>
+    <p class="subtle">Loading official trailer...</p>
+  `;
+
+  detail.insertBefore(section, screenshots.closest(".detail-section"));
+
+  try {
+    const response = await fetch(`/api/steam/${appid}`);
+    if (!response.ok) throw new Error("Steam request failed");
+
+    const data = await response.json();
+    const movie = (data.movies || [])[0];
+
+    if (!movie) {
+      section.innerHTML = `
+        <h3>OFFICIAL STEAM TRAILER</h3>
+        <p class="subtle">No Steam trailer currently available.</p>
+      `;
+      return;
+    }
+
+    const video = movie.mp4 || movie.webm;
+    const type = movie.mp4 ? "video/mp4" : "video/webm";
+
+    section.innerHTML = `
+      <h3>OFFICIAL STEAM TRAILER</h3>
+      <video
+        controls
+        playsinline
+        preload="metadata"
+        poster="${movie.thumbnail || ""}"
+        style="
+          display:block;
+          width:100%;
+          aspect-ratio:16/9;
+          object-fit:contain;
+          background:#000;
+          border:1px solid #c5a56d;
+        ">
+        <source src="${video}" type="${type}">
+        Your browser does not support this video.
+      </video>
+      <p class="subtle">${movie.name || "Official Game Trailer"}</p>
+    `;
+  } catch (error) {
+    console.error("Steam trailer error:", error);
+    section.innerHTML = `
+      <h3>OFFICIAL STEAM TRAILER</h3>
+      <p class="subtle">Unable to load the Steam trailer.</p>
+    `;
+  }
+}
