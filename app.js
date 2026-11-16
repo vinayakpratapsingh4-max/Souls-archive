@@ -441,7 +441,7 @@ function openGame(id) {
 
   const details = (typeof gameDetails !== "undefined" && gameDetails[id]) || {};
   const saved = wishlist.includes(id);
-
+const media = gameMedia[id] || {};
   $("game-detail").innerHTML = `
     <img class="detail-cover" src="${game.image}" alt="${game.name}">
 
@@ -458,7 +458,20 @@ function openGame(id) {
       <h3>THE JOURNEY</h3>
       <p class="detail-description">${details.description || game.description}</p>
     </section>
-
+    ${typeof gameMedia !== "undefined" && gameMedia[id]?.trailerId ? `
+    <section class="detail-section">
+      <h3>OFFICIAL TRAILER</h3>
+      <div style="position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border:1px solid #c5a56d;">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/${gameMedia[id].trailerId}"
+          title="${game.name} Official Trailer"
+          style="width:100%;height:100%;border:0;"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+    ` : ""}
     <section class="detail-section">
       <h3>PLATFORM AVAILABILITY</h3>
       <div class="pills">
