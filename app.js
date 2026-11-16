@@ -1,6 +1,6 @@
 
 const games = [
-  {id:1,name:"Elden Ring",genre:"Souls",year:2022,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"ELDEN RING features vast fantastical landscapes and shadowy, complex dungeons that are connected seamlessly. Traverse the breathtaking world on foot or on horseback, alone or online with other players, and fully immerse yourself in the grassy plains, suffocating swamps, spiraling mountains, foreboding castles and other sites of grandeur on a scale never seen before in a FromSoftware title.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg",featured:true},
+  {id:1,name:"Elden Ring",genre:"Souls",year:2022,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","PS5","Xbox One","Xbox Series X/S"],description:"ELDEN RING features vast fantastical landscapes and shadowy, complex dungeons that are connected seamlessly. Traverse the breathtaking world on foot or on horseback, alone or online with other players, and fully immerse yourself in the grassy plains, suffocating swamps, spiraling mountains, foreboding castles and other sites of grandeur on a scale never seen before in a FromSoftware title.",image:"https://cdn.cloudflar hhe.steamstatic.com/steam/apps/1245620/header.jpg",featured:true},
 
   {id:2,name:"Dark Souls Remastered",genre:"Souls",year:2018,studio:"FromSoftware",difficulty:"Hard",platforms:["PC","PS4","Xbox One","Nintendo Switch"],description:"Return to Lordran in the remastered version of the game that defined a genre.",image:"https://cdn.cloudflare.steamstatic.com/steam/apps/570940/header.jpg",featured:true},
 
@@ -556,7 +556,14 @@ const steamAppIds = {
   15: "1030300",
   16: "1809540"
 };
-
+const gameMedia = {
+  1: {
+    trailerId: "l6pCyV7PnqI",
+    screenshotSource: "steam",
+    manualScreenshots: []
+  }
+};
+  
 
 async function loadSteamPrice(id) {
   const appid = steamAppIds[id];
