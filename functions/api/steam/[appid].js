@@ -79,14 +79,7 @@ const movies = [...(data.detailed_description || "").matchAll(/<video\b([^>]*)>(
 
       
 
-movies: (data.movies || []).map(movie => ({
-  name: movie.name,
-  thumbnail: movie.thumbnail,
-  mp4: movie.mp4?.max || movie.mp4?.["480"] || null,
-  webm: movie.webm?.max || movie.webm?.["480"] || null,
-  hls: movie.hls?.max || movie.hls?.["480"] || null
-})).filter(movie => movie.mp4 || movie.webm || movie.hls)
-
+movies: movies,
 
 
     }, {
