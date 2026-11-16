@@ -1,4 +1,5 @@
 
+
 const STEAM_APP_IDS = new Set([
   "1245620", "570940", "335300", "374320",
   "814380", "1888160", "2358720", "1627720",
@@ -18,7 +19,7 @@ export async function onRequest({ params }) {
 
   const url =
     `https://store.steampowered.com/api/appdetails` +
-    `?appids=${appid}&cc=in&filters=price_overview`;
+    `?appids=${appid}&cc=in`;
 
   try {
     const response = await fetch(url, {
@@ -37,29 +38,31 @@ export async function onRequest({ params }) {
 
     if (!game || !game.success || !game.data) {
       return Response.json(
-        { error: "Steam price unavailable" },
+        { error: "Steam data unavailable" },
         { status: 404 }
       );
     }
 
-    const price = game.data.price_overview;
-
-    if (!price) {
-      return Response.json({
-        available: false,
-        message: "No price currently listed"
-      });
-    }
+    const data = game.data;
+    const price = data.price_overview;
 
     return Response.json({
-      available: true,
-      currency: price.currency,
-      initial: price.initial,
-      final: price.final,
-      discountPercent: price.discount_percent,
-      originalFormatted: price.initial_formatted,
-      finalFormatted: price.final_formatted,
-      storeUrl: `https://store.steampowered.com/app/${appid}/`
+      available: !!price,
+      message: price ? undefined : "No price currently listed",
+
+      currency: price?.currency,
+      initial: price?.initial,
+      final: price?.final,
+      discountPercent: price?.discount_percent,
+      originalFormatted: price?.initial_formatted,
+      finalFormatted: price?.final_formatted,
+
+      storeUrl: `https://store.steampowered.com/app/${appid}/`,
+
+      screenshots: (data.screenshots || []).map(shot => ({
+        thumbnail: shot.path_thumbnail,
+        full: shot.path_full
+      }))
     }, {
       headers: {
         "Cache-Control": "public, max-age=3600"
@@ -68,8 +71,8 @@ export async function onRequest({ params }) {
 
   } catch (error) {
     return Response.json(
-      { error: "Unable to fetch Steam pricing" },
+      { error: "Unable to fetch Steam data" },
       { status: 502 }
     );
   }
-      }
+}
