@@ -1565,6 +1565,7 @@ loadSteamTrailer = function(id) {
     let currentSource = youtubeOnly ? "youtube" : "steam";
     let isVisible = false;
     let youtubeStarted = false;
+let saYoutubeSoundRequested = false;
 
     if (!videoId) {
       youtubeSlide.innerHTML =
@@ -1585,6 +1586,10 @@ loadSteamTrailer = function(id) {
     }
 
     function startYouTube(userInitiated = false) {
+  if (userInitiated) {
+    saYoutubeSoundRequested = true;
+  }
+
   if (
     currentSource !== "youtube" ||
     !isVisible ||
@@ -1595,19 +1600,22 @@ loadSteamTrailer = function(id) {
   if (!youtubeStarted) {
     iframe.src =
       `https://www.youtube-nocookie.com/embed/${videoId}` +
-      `?autoplay=1&mute=${userInitiated ? 0 : 1}` +
+      `?autoplay=1` +
+      `&mute=${saYoutubeSoundRequested ? 0 : 1}` +
       `&playsinline=1&controls=1&enablejsapi=1`;
 
     youtubeStarted = true;
   } else if (iframe.contentWindow) {
-    iframe.contentWindow.postMessage(
-      JSON.stringify({
-        event: "command",
-        func: userInitiated ? "unMute" : "playVideo",
-        args: []
-      }),
-      "*"
-    );
+    ["unMute", "playVideo"].forEach(command => {
+      iframe.contentWindow.postMessage(
+        JSON.stringify({
+          event: "command",
+          func: command,
+          args: []
+        }),
+        "*"
+      );
+    });
   }
 }
 
