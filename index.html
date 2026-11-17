@@ -171,6 +171,15 @@
     <button class="nav-item" data-page="about-page"><span>☰</span>ARCHIVE</button>
   </nav>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+window.supabaseClient = window.supabase.createClient(
+  "https://keqqsodxuacacykgkcwq.supabase.co",
+  "YOUR_PUBLISHABLE_KEY"
+);
+</script>
+
+<script src="app.js"></script>
 </body>
 </html>
