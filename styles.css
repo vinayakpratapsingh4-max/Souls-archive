@@ -2012,15 +2012,3 @@ a:active {
   animation: saHomeReturn .65s cubic-bezier(.22,1,.36,1) both;
 }
 
-/* ===== KEEP HOME BACKGROUND FIXED ===== */
-
-#home-page {
-  background-attachment: fixed !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-}
-
-#home-page.sa-home-return {
-  background-attachment: fixed !important;
-}
