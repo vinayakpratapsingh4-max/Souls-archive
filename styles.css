@@ -1623,3 +1623,42 @@
     animation: none;
   }
 }
+
+/* ==========================================
+   SOULS.ARCHIVE — CINEMATIC SECTION TRANSITIONS
+========================================== */
+
+@keyframes saSectionEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(.985);
+    filter: blur(5px);
+  }
+
+  65% {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.page.sa-section-enter {
+  animation: saSectionEnter .6s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* Keep the Devices page on the shared transition */
+#devices-page:not([hidden]).sa-section-enter {
+  animation: saSectionEnter .6s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page.sa-section-enter,
+  #devices-page:not([hidden]).sa-section-enter {
+    animation: none;
+  }
+}
