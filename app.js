@@ -2327,3 +2327,258 @@ document.querySelector(".brand")?.addEventListener("click", event => {
   void home.offsetWidth;
   home.classList.add("sa-home-return");
 });
+
+/* ==========================================
+   SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER
+   BLOODBORNE + DEMON'S SOULS
+========================================== */
+
+window.saTrophyLists = {
+  6: [
+    ["Platinum","Bloodborne","All trophies acquired. Hats off!"],
+    ["Gold","Yharnam Sunrise","You lived through the hunt, and saw another day."],
+    ["Gold","Honoring Wishes","Pledge to watch over the Hunter's Dream."],
+    ["Gold","Childhood's Beginning","Become an infant Great One."],
+    ["Gold","Yharnam, Pthumerian Queen","Defeat Yharnam, Blood Queen of the Old Labyrinth."],
+    ["Gold","Hunter's Essence","Acquire all hunter weapons."],
+    ["Gold","Hunter's Craft","Acquire all special hunter tools."],
+    ["Silver","Weapon Master","Acquire a weapon of the highest level."],
+    ["Silver","Blood Gem Master","Acquire an extremely precious blood gem."],
+    ["Silver","Rune Master","Acquire an extremely precious Caryll Rune."],
+    ["Silver","Cainhurst","Gain entry to Cainhurst Castle."],
+    ["Silver","The Choir","Gain entry to the realm of the Choir."],
+    ["Silver","The Source of the Dream","Discover the abandoned old workshop."],
+    ["Silver","Nightmare Lecture Building","Gain entry to the Byrgenwerth lecture building."],
+    ["Bronze","Father Gascoigne","Defeat Father Gascoigne."],
+    ["Bronze","Vicar Amelia","Defeat Vicar Amelia."],
+    ["Bronze","Shadow of Yharnam","Defeat the Shadow of Yharnam."],
+    ["Bronze","Rom, the Vacuous Spider","Defeat Rom."],
+    ["Bronze","The One Reborn","Defeat the One Reborn."],
+    ["Bronze","Micolash, Host of the Nightmare","Defeat Micolash."],
+    ["Bronze","Mergo's Wet Nurse","Defeat Mergo's Wet Nurse."],
+    ["Bronze","Cleric Beast","Defeat Cleric Beast."],
+    ["Bronze","Blood-starved Beast","Defeat Blood-starved Beast."],
+    ["Bronze","The Witch of Hemwick","Defeat the Witch of Hemwick."],
+    ["Bronze","Darkbeast Paarl","Defeat Darkbeast Paarl."],
+    ["Bronze","Amygdala","Defeat Amygdala."],
+    ["Bronze","Martyr Logarius","Defeat Martyr Logarius."],
+    ["Bronze","Celestial Emissary","Defeat the Celestial Emissary."],
+    ["Bronze","Ebrietas, Daughter of the Cosmos","Defeat Ebrietas."],
+    ["Bronze","Blood Gem Contact","Acquire a blood gem that strengthens hunter weapons."],
+    ["Bronze","Rune Contact","Acquire a Caryll Rune."],
+    ["Bronze","Chalice of Pthumeru","Acquire the Chalice of Pthumeru."],
+    ["Bronze","Chalice of Ailing Loran","Acquire the Chalice of Ailing Loran."],
+    ["Bronze","Chalice of Isz","Acquire the Great Chalice of Isz."],
+    ["Gold","Old Hunter's Essence","Acquire all old hunter weapons.","DLC"],
+    ["Silver","Orphan of Kos","Defeat the Orphan of Kos.","DLC"],
+    ["Bronze","Ludwig, the Holy Blade","Defeat Ludwig.","DLC"],
+    ["Bronze","Lady Maria of the Astral Clocktower","Defeat Lady Maria.","DLC"],
+    ["Bronze","Living Failures","Defeat the Living Failures.","DLC"],
+    ["Bronze","Laurence, the First Vicar","Defeat Laurence.","DLC"]
+  ],
+
+  5: [
+    ["Platinum","Slayer of Trophies","Obtain all trophies."],
+    ["Bronze","Phalanx's Trophy","Defeat Phalanx."],
+    ["Bronze","Tower Knight's Trophy","Defeat the Tower Knight."],
+    ["Bronze","Penetrator's Trophy","Defeat the Penetrator."],
+    ["Bronze","False King's Trophy","Defeat the False King."],
+    ["Bronze","Armor Spider's Trophy","Defeat the Armor Spider."],
+    ["Bronze","Flamelurker's Trophy","Defeat Flamelurker."],
+    ["Bronze","Dragon God's Trophy","Defeat the Dragon God."],
+    ["Bronze","Fool's Idol's Trophy","Defeat the Fool's Idol."],
+    ["Bronze","Maneater's Trophy","Defeat the Maneater."],
+    ["Bronze","Old Monk's Trophy","Defeat the Old Monk."],
+    ["Bronze","Adjudicator's Trophy","Defeat the Adjudicator."],
+    ["Bronze","Old Hero's Trophy","Defeat the Old Hero."],
+    ["Bronze","Storm King's Trophy","Defeat the Storm King."],
+    ["Bronze","Leechmonger's Trophy","Defeat the Leechmonger."],
+    ["Bronze","Dirty Colossus' Trophy","Defeat the Dirty Colossus."],
+    ["Bronze","Maiden Astraea's Trophy","Defeat Maiden Astraea."],
+    ["Silver","Return to Form","Help another player defeat a boss."],
+    ["Silver","Unwelcome Guest","Defeat another player as an invader."],
+    ["Silver","One Shall Fall","Defeat the Tower Knight without killing archers."],
+    ["Bronze","Brother-in-Arms","Defeat the Penetrator with Biorr."],
+    ["Bronze","Fists of Legend","Defeat the Dragon God with the Hands of God."],
+    ["Silver","Time for Rolling","Cross the Idol's arrow walkway."],
+    ["Silver","Not Fooled","Defeat the Fool's Idol without hitting clones."],
+    ["Silver","One Shall Stand","Defeat the Adjudicator without making him fall."],
+    ["Silver","May you be unharmed","Defeat Maiden Astraea without killing Garl Vinland."],
+    ["Gold","Seekest soul power","Embrace the power of the Old One."],
+    ["Bronze","A Dash of Sage","Rescue Sage Freke."],
+    ["Bronze","Umbasa","Rescue Saint Urbain."],
+    ["Silver","Worthy of the Sword","Deliver Makoto to Satsuki."],
+    ["Bronze","Road to Possibilities","Give the Searing Demon Soul to Blacksmith Ed."],
+    ["Silver","One of the few","Obtain Istarelle."],
+    ["Bronze","Witch in the Tower","Rescue Yuria the Witch."],
+    ["Gold","Legacy of the Kings","Obtain the Northern Regalia."],
+    ["Gold","Sage's Trophy","Obtain all magic spells."],
+    ["Gold","Saint's Trophy","Obtain all miracles."],
+    ["Gold","King of Rings","Obtain all rings."]
+  ]
+};
+
+window.saTrophyRender = function(gameId) {
+  if (![5, 6].includes(Number(gameId))) return;
+
+  const detail = document.getElementById("game-detail");
+  if (!detail) return;
+
+  // Remove only the Steam Achievements section.
+  [...detail.querySelectorAll(".detail-section")].forEach(section => {
+    const heading = section.querySelector("h3");
+    if (heading && heading.textContent.trim().toUpperCase() === "STEAM ACHIEVEMENTS") {
+      section.remove();
+    }
+  });
+
+  document.getElementById("sa-ps-trophy-tracker")?.remove();
+
+  const list = window.saTrophyLists[Number(gameId)];
+  const storageKey = "sa-trophies-" + gameId;
+
+  let earned = [];
+  try {
+    earned = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    if (!Array.isArray(earned)) earned = [];
+  } catch {
+    earned = [];
+  }
+
+  let activeFilter = "All";
+
+  const tracker = document.createElement("section");
+  tracker.id = "sa-ps-trophy-tracker";
+  tracker.className = "detail-section sa-trophy-section";
+
+  tracker.innerHTML = `
+    <div class="sa-trophy-heading">
+      <span class="eyebrow">PLAYSTATION NETWORK</span>
+      <h3>🏆 TROPHY COLLECTION</h3>
+      <p class="subtle">${gameId === 6 ? "BLOODBORNE · INCLUDING THE OLD HUNTERS" : "DEMON'S SOULS · PS5 REMAKE"}</p>
+    </div>
+
+    <div class="sa-trophy-overview">
+      <div class="sa-trophy-total">
+        <strong class="sa-trophy-earned">0</strong>
+        <span> / ${list.length} TROPHIES</span>
+      </div>
+      <strong class="sa-trophy-percent">0%</strong>
+      <div class="sa-trophy-progress">
+        <div class="sa-trophy-progress-fill"></div>
+      </div>
+      <div class="sa-trophy-counts"></div>
+    </div>
+
+    <div class="sa-trophy-filters">
+      ${["All","Platinum","Gold","Silver","Bronze"].map(rank =>
+        `<button type="button" class="sa-trophy-filter" data-rank="${rank}">${rank}</button>`
+      ).join("")}
+    </div>
+
+    <div class="sa-trophy-list"></div>
+    <p class="sa-trophy-save-note">✓ PROGRESS SAVES AUTOMATICALLY ON THIS DEVICE</p>
+  `;
+
+  const storeGallery = detail.querySelector(".sa-store-gallery");
+  if (storeGallery) {
+    storeGallery.insertAdjacentElement("afterend", tracker);
+  } else {
+    detail.appendChild(tracker);
+  }
+
+  const listBox = tracker.querySelector(".sa-trophy-list");
+
+  function update() {
+    const total = list.length;
+    const count = earned.length;
+    const percent = Math.round(count / total * 100);
+
+    tracker.querySelector(".sa-trophy-earned").textContent = count;
+    tracker.querySelector(".sa-trophy-percent").textContent = percent + "%";
+    tracker.querySelector(".sa-trophy-progress-fill").style.width = percent + "%";
+
+    const ranks = ["Platinum","Gold","Silver","Bronze"];
+    tracker.querySelector(".sa-trophy-counts").innerHTML =
+      ranks.map(rank => {
+        const totalRank = list.filter(t => t[0] === rank).length;
+        const earnedRank = list.filter((t,i) =>
+          t[0] === rank && earned.includes(i)
+        ).length;
+
+        return `
+          <div class="sa-trophy-stat">
+            <strong>${earnedRank}/${totalRank}</strong>
+            <span>${rank}</span>
+          </div>
+        `;
+      }).join("");
+
+    const visible = list
+      .map((trophy,index) => ({trophy,index}))
+      .filter(item =>
+        activeFilter === "All" || item.trophy[0] === activeFilter
+      );
+
+    listBox.innerHTML = visible.map(({trophy,index}) => `
+      <label class="sa-trophy-item ${earned.includes(index) ? "is-earned" : ""}">
+        <input type="checkbox" data-trophy-index="${index}"
+          ${earned.includes(index) ? "checked" : ""}>
+        <span class="sa-trophy-icon sa-rank-${trophy[0].toLowerCase()}">
+          ${trophy[0] === "Platinum" ? "♛" :
+            trophy[0] === "Gold" ? "★" :
+            trophy[0] === "Silver" ? "◆" : "●"}
+        </span>
+        <span class="sa-trophy-info">
+          <strong>${trophy[1]}</strong>
+          <small>${trophy[2]}</small>
+          ${trophy[3] ? `<em>${trophy[3]}</em>` : ""}
+        </span>
+        <span class="sa-trophy-rank">${trophy[0].toUpperCase()}</span>
+      </label>
+    `).join("");
+  }
+
+  tracker.querySelectorAll(".sa-trophy-filter").forEach(button => {
+    button.classList.toggle("active", button.dataset.rank === "All");
+
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.rank;
+
+      tracker.querySelectorAll(".sa-trophy-filter").forEach(item =>
+        item.classList.toggle("active", item === button)
+      );
+
+      update();
+    });
+  });
+
+  listBox.addEventListener("change", event => {
+    const checkbox = event.target.closest("[data-trophy-index]");
+    if (!checkbox) return;
+
+    const index = Number(checkbox.dataset.trophyIndex);
+
+    if (checkbox.checked && !earned.includes(index)) {
+      earned.push(index);
+    } else {
+      earned = earned.filter(item => item !== index);
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(earned));
+    update();
+  });
+
+  update();
+};
+
+// Preserve the existing Store Gallery and all earlier openGame wrappers.
+const saTrophyPreviousOpenGame = openGame;
+
+openGame = function(id) {
+  saTrophyPreviousOpenGame(id);
+  window.saTrophyRender(id);
+};
+
+console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
+
