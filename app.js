@@ -1940,3 +1940,24 @@ loadGameScreenshots = function(id) {
 };
 
 console.log("SOULS.ARCHIVE — CUSTOM SCREENSHOTS READY");
+
+/* SOULS.ARCHIVE — DEVICE SELECTOR */
+
+document.querySelectorAll(".device-option").forEach(button => {
+    button.addEventListener("click", () => {
+          const platform = button.dataset.platform;
+          const selector = document.getElementById("platform-select");
+
+                                if (!selector) return;
+
+                                selector.value = platform;
+
+                                document.querySelectorAll(".device-option").forEach(option => {
+                                        option.classList.toggle("active", option === button);
+                                });
+
+                                renderDevices();
+    });
+});
+
+console.log("SOULS.ARCHIVE — DEVICE SELECTOR READY");
