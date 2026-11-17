@@ -2264,3 +2264,40 @@ openGame = function(id) {
 
 console.log("SOULS.ARCHIVE — STORE GALLERY READY");
 
+
+/* ===== SOULS.ARCHIVE — STORE DATA FIXES ===== */
+
+// 1. HOLLOW KNIGHT: SILKSONG — PC REQUIREMENTS
+gameDetails[15].min =
+  "OS: Windows 10 version 21H1 (build 19043) or newer | CPU: Intel Core i3-3240 / AMD FX-4300 | RAM: 4 GB | GPU: GTX 560 Ti 1GB / Radeon HD 7750 1GB | DirectX 10 | Storage: 8 GB";
+
+gameDetails[15].rec =
+  "OS: Windows 10 version 21H1 (build 19043) or newer | CPU: Intel Core i5-3470 | RAM: 8 GB | GPU: GTX 1050 2GB / Radeon R9 380 2GB | DirectX 10 | Storage: 8 GB";
+
+
+// 2. NINE SOLS — NINTENDO ORIGINAL PRICE
+saStorePrices.nintendo[16] = "$29.99";
+
+
+// 3. ADDITIONAL VERIFIED PLAYSTATION ORIGINAL PRICES
+Object.assign(saStorePrices.playstation, {
+  7: "₹3,999",
+  8: "₹3,999",
+  10: "₹3,799",
+  14: "₹1,206",
+  15: "₹1,664",
+  16: "₹2,415"
+});
+
+
+// 4. OFFICIAL PLAYSTATION STORE LINKS
+Object.assign(saStoreLinks.playstation, {
+  7: "https://store.playstation.com/en-in/product/EP0002-CUSA13801_00-SEKIROGAME000001/",
+  8: "https://www.playstation.com/en-in/games/armored-core-6-fires-of-rubicon/",
+  10: "https://www.playstation.com/en-in/games/lies-of-p/",
+  14: "https://www.playstation.com/en-in/games/hollow-knight-voidheart-edition/",
+  15: "https://www.playstation.com/en-in/games/hollow-knight-silksong/",
+  16: "https://www.playstation.com/en-in/games/nine-sols/"
+});
+
+console.log("SOULS.ARCHIVE — STORE DATA FIXES LOADED");
