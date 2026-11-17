@@ -2012,3 +2012,506 @@ showPage = function(pageId) {
 };
 
 console.log("SOULS.ARCHIVE — SECTION TRANSITIONS READY");
+
+/* ==========================================
+   SOULS.ARCHIVE — STORE GALLERY
+   STEAM + PLAYSTATION + NINTENDO
+========================================== */
+
+const saStorePrices = {
+  playstation: {
+    1: "₹3,499",
+    2: "₹2,499",
+    5: "₹4,999",
+    6: "₹1,499",
+    9: "₹3,999",
+    11: "₹1,999",
+    12: "₹2,499",
+    13: "₹2,999"
+  },
+  nintendo: {
+    14: "$15.00",
+    15: "$19.99"
+  }
+};
+
+const saStoreLinks = {
+  playstation: {
+    1: "https://store.playstation.com/en-in/product/EP0700-PPSA04609_00-ELDENRING0000000",
+    2: "https://store.playstation.com/en-in/product/EP0700-CUSA08495_00-DARKSOULSHD00000/",
+    5: "https://store.playstation.com/en-in/concept/10000368/",
+    6: "https://store.playstation.com/en-in/product/EP9000-CUSA00207_00-BLOODBORNE0000EU/",
+    9: "https://store.playstation.com/en-in/product/HP6545-PPSA23226_00-GAME000000000000/",
+    11: "https://store.playstation.com/en-in/product/EP4321-PPSA03641_00-0026114790873430",
+    12: "https://store.playstation.com/en-in/product/EP9000-CUSA15526_00-NIOH2EU000000000",
+    13: "https://store.playstation.com/en-in/concept/10004116"
+  },
+  nintendo: {
+    2: "https://www.nintendo.com/us/search/#q=Dark%20Souls%20Remastered",
+    14: "https://www.nintendo.com/US/store/products/hollow-knight-switch/",
+    15: "https://www.nintendo.com/us/search/#q=Hollow%20Knight%20Silksong",
+    16: "https://www.nintendo.com/us/store/products/nine-sols-switch/"
+  }
+};
+
+function saStoreCard(platform, game) {
+  const isSony = platform === "playstation";
+  const prices = saStorePrices[platform];
+  const links = saStoreLinks[platform];
+
+  const price = prices[game.id];
+  const url = links[game.id] || (
+    isSony
+      ? "https://store.playstation.com/en-in/search/" +
+        encodeURIComponent(game.name)
+      : "https://www.nintendo.com/us/search/#q=" +
+        encodeURIComponent(game.name)
+  );
+
+  const title = isSony
+    ? "PLAYSTATION STORE"
+    : "NINTENDO eSHOP";
+
+  const subtitle = isSony
+    ? "OFFICIAL SONY STORE · INDIA"
+    : "OFFICIAL NINTENDO STORE · USA";
+
+  const priceText = price
+    ? `<strong>${price}</strong>`
+    : `<strong class="sa-store-price-pending">Check official store price</strong>`;
+
+  return `
+    <div class="sa-store-card sa-store-${platform}">
+      <div class="sa-store-card-top">
+        <span class="sa-store-indicator"></span>
+        <span>${title}</span>
+        <small>${subtitle}</small>
+      </div>
+
+      <div class="sa-store-card-main">
+        <span class="sa-store-label">ORIGINAL PRICE</span>
+        ${priceText}
+        <p>
+          ${price
+            ? "Discounts and current offers are shown on the official store."
+            : "Check the official store for the listed edition and price."}
+        </p>
+      </div>
+
+      <div class="sa-store-card-footer">
+        <span>OFFICIAL STORE LISTING</span>
+        <span>↗</span>
+      </div>
+
+      <a class="sa-store-visit"
+         href="${url}"
+         target="_blank"
+         rel="noopener noreferrer">
+        VISIT ${isSony ? "PLAYSTATION" : "NINTENDO"} STORE
+        <span>→</span>
+      </a>
+    </div>
+  `;
+}
+
+function saBuildStoreGallery(gameId) {
+  const game = games.find(item => item.id === Number(gameId));
+  const detail = document.getElementById("game-detail");
+  const steamSection = document.getElementById("steam-price")
+    ?.closest(".detail-section");
+
+  if (!game || !detail || !steamSection) return;
+
+  // Prevent duplicate galleries.
+  detail.querySelector(".sa-store-gallery")?.remove();
+
+  const hasPlayStation = game.platforms.some(platform =>
+    /^PS[345]$/.test(platform)
+  );
+
+  const hasNintendo = game.platforms.some(platform =>
+    platform.toLowerCase().includes("nintendo switch")
+  );
+
+  const gallery = document.createElement("section");
+  gallery.className = "detail-section sa-store-gallery";
+
+  gallery.innerHTML = `
+    <h3>STORE GALLERY</h3>
+
+    <div class="sa-store-viewport">
+      <div class="sa-store-track"></div>
+    </div>
+
+    <div class="sa-store-navigation">
+      <button class="sa-store-arrow sa-store-prev"
+              type="button" aria-label="Previous store">‹</button>
+      <div class="sa-store-dots"></div>
+      <button class="sa-store-arrow sa-store-next"
+              type="button" aria-label="Next store">›</button>
+    </div>
+
+    <p class="sa-store-hint">SWIPE TO EXPLORE STORES</p>
+  `;
+
+  const track = gallery.querySelector(".sa-store-track");
+
+  // Keep the ORIGINAL Steam section and its existing price loader.
+  const steamSlide = document.createElement("div");
+  steamSlide.className = "sa-store-slide sa-store-slide-steam";
+  steamSlide.appendChild(steamSection);
+  track.appendChild(steamSlide);
+
+  if (hasPlayStation) {
+    const slide = document.createElement("div");
+    slide.className = "sa-store-slide";
+    slide.innerHTML = saStoreCard("playstation", game);
+    track.appendChild(slide);
+  }
+
+  if (hasNintendo) {
+    const slide = document.createElement("div");
+    slide.className = "sa-store-slide";
+    slide.innerHTML = saStoreCard("nintendo", game);
+    track.appendChild(slide);
+  }
+
+  // Put the gallery where the Steam section used to be.
+  detail.insertBefore(gallery, steamSection);
+  gallery.querySelector(".sa-store-viewport").appendChild(track);
+
+  const viewport = gallery.querySelector(".sa-store-viewport");
+  const dots = gallery.querySelector(".sa-store-dots");
+  const previous = gallery.querySelector(".sa-store-prev");
+  const next = gallery.querySelector(".sa-store-next");
+
+  const slides = [...track.children];
+  let current = 0;
+  let startX = 0;
+  let dragX = 0;
+  let dragging = false;
+
+  slides.forEach((slide, index) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "sa-store-dot";
+    dot.setAttribute("aria-label", `Show store ${index + 1}`);
+    dot.addEventListener("click", () => goTo(index));
+    dots.appendChild(dot);
+  });
+
+  function render(animate = true) {
+    track.style.transition = animate
+      ? "transform 420ms cubic-bezier(.22,.61,.36,1)"
+      : "none";
+
+    track.style.transform =
+      `translate3d(${-current * viewport.clientWidth}px,0,0)`;
+
+    [...dots.children].forEach((dot, index) => {
+      dot.classList.toggle("active", index === current);
+    });
+
+    previous.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+  }
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    render();
+  }
+
+  previous.addEventListener("click", () => goTo(current - 1));
+  next.addEventListener("click", () => goTo(current + 1));
+
+  viewport.addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    dragging = true;
+    startX = event.clientX;
+    dragX = 0;
+    track.style.transition = "none";
+    viewport.setPointerCapture(event.pointerId);
+  });
+
+  viewport.addEventListener("pointermove", event => {
+    if (!dragging) return;
+
+    dragX = event.clientX - startX;
+
+    const offset =
+      -current * viewport.clientWidth + dragX;
+
+    track.style.transform =
+      `translate3d(${offset}px,0,0)`;
+  });
+
+  function finishDrag() {
+    if (!dragging) return;
+    dragging = false;
+
+    if (Math.abs(dragX) > viewport.clientWidth * 0.18) {
+      goTo(current + (dragX < 0 ? 1 : -1));
+    } else {
+      render();
+    }
+  }
+
+  viewport.addEventListener("pointerup", finishDrag);
+  viewport.addEventListener("pointercancel", finishDrag);
+
+  render(false);
+}
+
+// Keep all existing openGame behaviour.
+const saStorePreviousOpenGame = openGame;
+
+openGame = function(id) {
+  saStorePreviousOpenGame(id);
+  saBuildStoreGallery(id);
+};
+
+console.log("SOULS.ARCHIVE — STORE GALLERY READY");
+
+/* ==========================================
+   SOULS.ARCHIVE — STORE GALLERY
+========================================== */
+
+const saStorePrices = {
+  playstation: {
+    1: "₹3,499",
+    2: "₹2,499",
+    5: "₹4,999",
+    6: "₹1,499",
+    9: "₹3,999",
+    11: "₹1,999",
+    12: "₹2,499",
+    13: "₹2,999"
+  },
+  nintendo: {
+    14: "$15.00",
+    15: "$19.99"
+  }
+};
+
+const saStoreLinks = {
+  playstation: {
+    1: "https://store.playstation.com/en-in/product/EP0700-PPSA04609_00-ELDENRING0000000",
+    2: "https://store.playstation.com/en-in/product/EP0700-CUSA08495_00-DARKSOULSHD00000/",
+    5: "https://store.playstation.com/en-in/concept/10000368/",
+    6: "https://store.playstation.com/en-in/product/EP9000-CUSA00207_00-BLOODBORNE0000EU/",
+    9: "https://store.playstation.com/en-in/product/HP6545-PPSA23226_00-GAME000000000000/",
+    11: "https://store.playstation.com/en-in/product/EP4321-PPSA03641_00-0026114790873430",
+    12: "https://store.playstation.com/en-in/product/EP9000-CUSA15526_00-NIOH2EU000000000",
+    13: "https://store.playstation.com/en-in/concept/10004116"
+  },
+  nintendo: {
+    2: "https://www.nintendo.com/us/search/#q=Dark%20Souls%20Remastered",
+    14: "https://www.nintendo.com/US/store/products/hollow-knight-switch/",
+    15: "https://www.nintendo.com/us/search/#q=Hollow%20Knight%20Silksong",
+    16: "https://www.nintendo.com/us/store/products/nine-sols-switch/"
+  }
+};
+
+function saStoreCard(platform, game) {
+  const isSony = platform === "playstation";
+  const price = saStorePrices[platform][game.id];
+
+  const url = saStoreLinks[platform][game.id] || (
+    isSony
+      ? "https://store.playstation.com/en-in/search/" +
+        encodeURIComponent(game.name)
+      : "https://www.nintendo.com/us/search/#q=" +
+        encodeURIComponent(game.name)
+  );
+
+  const title = isSony ? "PLAYSTATION STORE" : "NINTENDO eSHOP";
+  const subtitle = isSony
+    ? "OFFICIAL SONY STORE · INDIA"
+    : "OFFICIAL NINTENDO STORE · USA";
+
+  return `
+    <div class="sa-store-card sa-store-${platform}">
+      <div class="sa-store-card-top">
+        <span class="sa-store-indicator"></span>
+        <span>${title}</span>
+        <small>${subtitle}</small>
+      </div>
+
+      <div class="sa-store-card-main">
+        <span class="sa-store-label">ORIGINAL PRICE</span>
+        <strong>${price || "Check official store price"}</strong>
+        <p>
+          ${price
+            ? "Check the official store for current discounts."
+            : "Check the official store for the listed edition and price."}
+        </p>
+      </div>
+
+      <div class="sa-store-card-footer">
+        <span>OFFICIAL STORE LISTING</span>
+        <span>↗</span>
+      </div>
+
+      <a class="sa-store-visit"
+         href="${url}"
+         target="_blank"
+         rel="noopener noreferrer">
+        VISIT ${isSony ? "PLAYSTATION" : "NINTENDO"} STORE
+        <span>→</span>
+      </a>
+    </div>
+  `;
+}
+
+function saBuildStoreGallery(gameId) {
+  const game = games.find(item => item.id === Number(gameId));
+  const detail = document.getElementById("game-detail");
+  const steamSection = document.getElementById("steam-price")
+    ?.closest(".detail-section");
+
+  if (!game || !detail || !steamSection) return;
+
+  detail.querySelector(".sa-store-gallery")?.remove();
+
+  const hasPlayStation = game.platforms.some(platform =>
+    /^PS[345]$/.test(platform)
+  );
+
+  const hasNintendo = game.platforms.some(platform =>
+    platform.toLowerCase().includes("nintendo switch")
+  );
+
+  const gallery = document.createElement("section");
+  gallery.className = "detail-section sa-store-gallery";
+
+  gallery.innerHTML = `
+    <h3>STORE GALLERY</h3>
+    <div class="sa-store-viewport">
+      <div class="sa-store-track"></div>
+    </div>
+    <div class="sa-store-navigation">
+      <button class="sa-store-arrow sa-store-prev"
+              type="button" aria-label="Previous store">‹</button>
+      <div class="sa-store-dots"></div>
+      <button class="sa-store-arrow sa-store-next"
+              type="button" aria-label="Next store">›</button>
+    </div>
+    <p class="sa-store-hint">SWIPE TO EXPLORE STORES</p>
+  `;
+
+  // Insert the gallery BEFORE moving the original Steam section.
+  detail.insertBefore(gallery, steamSection);
+
+  const track = gallery.querySelector(".sa-store-track");
+
+  // Move the original Steam section without rebuilding or changing it.
+  const steamSlide = document.createElement("div");
+  steamSlide.className = "sa-store-slide sa-store-slide-steam";
+  steamSlide.appendChild(steamSection);
+  track.appendChild(steamSlide);
+
+  if (hasPlayStation) {
+    const slide = document.createElement("div");
+    slide.className = "sa-store-slide";
+    slide.innerHTML = saStoreCard("playstation", game);
+    track.appendChild(slide);
+  }
+
+  if (hasNintendo) {
+    const slide = document.createElement("div");
+    slide.className = "sa-store-slide";
+    slide.innerHTML = saStoreCard("nintendo", game);
+    track.appendChild(slide);
+  }
+
+  const viewport = gallery.querySelector(".sa-store-viewport");
+  const dots = gallery.querySelector(".sa-store-dots");
+  const previous = gallery.querySelector(".sa-store-prev");
+  const next = gallery.querySelector(".sa-store-next");
+
+  const slides = [...track.children];
+  let current = 0;
+  let startX = 0;
+  let dragX = 0;
+  let dragging = false;
+
+  slides.forEach((slide, index) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "sa-store-dot";
+    dot.setAttribute("aria-label", `Show store ${index + 1}`);
+    dot.addEventListener("click", () => goTo(index));
+    dots.appendChild(dot);
+  });
+
+  function render(animate = true) {
+    track.style.transition = animate
+      ? "transform 420ms cubic-bezier(.22,.61,.36,1)"
+      : "none";
+
+    track.style.transform =
+      `translate3d(${-current * viewport.clientWidth}px,0,0)`;
+
+    [...dots.children].forEach((dot, index) => {
+      dot.classList.toggle("active", index === current);
+    });
+
+    previous.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+  }
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    render();
+  }
+
+  previous.addEventListener("click", () => goTo(current - 1));
+  next.addEventListener("click", () => goTo(current + 1));
+
+  viewport.addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    dragging = true;
+    startX = event.clientX;
+    dragX = 0;
+    track.style.transition = "none";
+    viewport.setPointerCapture(event.pointerId);
+  });
+
+  viewport.addEventListener("pointermove", event => {
+    if (!dragging) return;
+
+    dragX = event.clientX - startX;
+
+    track.style.transform =
+      `translate3d(${-current * viewport.clientWidth + dragX}px,0,0)`;
+  });
+
+  function finishDrag() {
+    if (!dragging) return;
+    dragging = false;
+
+    if (Math.abs(dragX) > viewport.clientWidth * 0.18) {
+      goTo(current + (dragX < 0 ? 1 : -1));
+    } else {
+      render();
+    }
+  }
+
+  viewport.addEventListener("pointerup", finishDrag);
+  viewport.addEventListener("pointercancel", finishDrag);
+
+  render(false);
+}
+
+// Preserve the existing openGame function and its other features.
+const saStorePreviousOpenGame = openGame;
+
+openGame = function(id) {
+  saStorePreviousOpenGame(id);
+  saBuildStoreGallery(id);
+};
+
+console.log("SOULS.ARCHIVE — STORE GALLERY READY");
+
