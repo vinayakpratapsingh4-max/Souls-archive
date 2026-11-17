@@ -2313,3 +2313,17 @@ Object.assign(saStoreLinks.playstation, {
   3: "https://store.playstation.com/en-in/concept/226237/",
   4: "https://store.playstation.com/en-in/concept/201190"
 });
+
+/* ===== BRAND HOME NAVIGATION TRANSITION ===== */
+
+document.querySelector(".brand")?.addEventListener("click", event => {
+  event.preventDefault();
+
+  showPage("home-page");
+
+  const home = document.getElementById("home-page");
+
+  home.classList.remove("sa-home-return");
+  void home.offsetWidth;
+  home.classList.add("sa-home-return");
+});
