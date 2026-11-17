@@ -2010,3 +2010,89 @@
   max-width: 100%;
   box-sizing: border-box;
 }
+
+/* ===== STORE GALLERY SIZE + SPACING FIX ===== */
+
+.sa-store-track {
+  gap: 0 !important;
+}
+
+.sa-store-slide {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  padding-right: 20px !important;
+  box-sizing: border-box !important;
+}
+
+.sa-store-slide > .detail-section,
+.sa-store-slide > .sa-store-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.sa-store-card {
+  min-height: 290px !important;
+  width: 100% !important;
+}
+
+.sa-store-slide-heading {
+  font-family: Cinzel, Georgia, serif !important;
+  font-size: 34px !important;
+  line-height: 1.3 !important;
+  letter-spacing: 1.5px !important;
+  margin: 0 0 17px !important;
+  white-space: normal !important;
+}
+
+/* ===== SONY METALLIC BLUE-GREY ===== */
+
+.sa-store-playstation {
+  color: #e8edf4 !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(115,145,174,.18),
+      transparent 45%
+    ),
+    linear-gradient(145deg,#263747,#172532 75%,#101c27) !important;
+  border: 1px solid rgba(180,205,226,.55) !important;
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.3),
+    inset 0 1px 1px rgba(255,255,255,.22),
+    inset 0 0 18px rgba(150,190,220,.08) !important;
+}
+
+.sa-store-playstation .sa-store-card-top,
+.sa-store-playstation .sa-store-card-footer {
+  color: #c9d9e8 !important;
+  border-color: rgba(210,230,248,.2) !important;
+}
+
+.sa-store-playstation .sa-store-card-main strong {
+  color: #f2f6fa !important;
+}
+
+.sa-store-playstation .sa-store-card-main p {
+  color: #b8c7d5 !important;
+}
+
+.sa-store-playstation .sa-store-visit {
+  color: #f0f6fc !important;
+  background: linear-gradient(110deg,#354f66,#263d52) !important;
+  border-color: rgba(195,220,242,.4) !important;
+}
+
+/* ===== DARK GAP BETWEEN CARDS ===== */
+
+.sa-store-viewport {
+  background: #080d09 !important;
+  border-radius: 14px !important;
+}
+
+.sa-store-slide {
+  background: transparent !important;
+}
