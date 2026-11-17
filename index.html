@@ -23,10 +23,56 @@
       A CODEX OF THE FORGOTTEN WORLDS
     </p>
 
-    <button id="enter-archive">
-      ENTER THE ARCHIVE
-      <span>→</span>
-    </button>
+    
+<div class="sa-intro-actions" id="sa-intro-actions">
+
+  <button type="button" id="sa-show-login" class="sa-intro-primary">
+    LOG IN
+  </button>
+
+  <button type="button" id="sa-show-signup" class="sa-intro-secondary">
+    CREATE ACCOUNT
+  </button>
+
+  <button type="button" id="sa-guest" class="sa-intro-guest">
+    CONTINUE AS GUEST →
+  </button>
+
+</div>
+
+<form id="sa-auth-form" hidden>
+
+  <h2 id="sa-auth-title">WELCOME BACK</h2>
+
+  <input
+    id="sa-auth-email"
+    type="email"
+    placeholder="Email address"
+    autocomplete="email"
+    required
+  >
+
+  <input
+    id="sa-auth-password"
+    type="password"
+    placeholder="Password"
+    autocomplete="current-password"
+    minlength="6"
+    required
+  >
+
+  <button type="submit" id="sa-auth-submit">
+    SIGN IN
+  </button>
+
+  <button type="button" id="sa-auth-back">
+    ← BACK
+  </button>
+
+  <p id="sa-auth-message" role="status"></p>
+
+</form>
+
   </div>
 
   <p class="intro-footer">THE AGE OF ASHES AWAITS</p>
