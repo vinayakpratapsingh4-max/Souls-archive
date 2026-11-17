@@ -1418,3 +1418,114 @@
   }
 }
 
+
+/* ==========================================
+   SOULS.ARCHIVE — PREMIUM DEVICE SELECTOR
+========================================== */
+
+.device-selector {
+    margin: 28px 0;
+}
+
+.device-selector .field-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #b49a69;
+    margin-bottom: 16px;
+}
+
+.device-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.device-option {
+    min-height: 105px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    background: linear-gradient(145deg, #20231f, #131712);
+    border: 1px solid rgba(190, 170, 125, .2);
+    border-radius: 13px;
+    color: #e8e1d3;
+    cursor: pointer;
+    text-align: left;
+    transition: .25s ease;
+}
+
+.device-option span {
+    font-size: 27px;
+    color: #b49a69;
+}
+
+.device-option strong {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.device-option:hover {
+    border-color: #b49a69;
+    transform: translateY(-3px);
+}
+
+.device-option.active {
+    background: linear-gradient(145deg, #383326, #211f19);
+    border-color: #c5a66b;
+    box-shadow: 0 0 22px rgba(197, 166, 107, .12);
+}
+
+.device-option.active span {
+    color: #e1c58e;
+}
+
+.results-panel {
+    margin-top: 30px;
+    border: 1px solid rgba(190, 170, 125, .2);
+    border-radius: 15px;
+    padding: 20px;
+    background: rgba(20, 25, 20, .75);
+}
+
+.results-panel > .eyebrow {
+    color: #b49a69;
+    letter-spacing: 3px;
+    font-size: 10px;
+    margin-bottom: 18px;
+}
+
+#device-results {
+    min-width: 0;
+}
+
+#device-results > * {
+    transition: background .2s ease;
+}
+
+.fine-print {
+    margin-top: 18px;
+    font-size: 11px;
+    line-height: 1.6;
+    opacity: .55;
+}
+
+@media (max-width: 380px) {
+    .device-options {
+          grid-template-columns: 1fr;
+    }
+
+  .device-option {
+        min-height: 75px;
+        flex-direction: row;
+        align-items: center;
+  }
+}
+
+@media (min-width: 700px) {
+    .device-options {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
