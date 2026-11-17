@@ -1870,3 +1870,73 @@ loadSteamTrailer = function(id) {
 };
 
 console.log("SOULS.ARCHIVE — MANUAL YOUTUBE PLAYER READY");
+
+/* ==========================================
+   SOULS.ARCHIVE — CUSTOM SCREENSHOT SOURCES
+   DEMON'S SOULS + BLOODBORNE
+========================================== */
+
+const saCustomScreenshots = {
+  5: [
+    "https://www.videogameschronicle.com/files/2020/11/Demon_s-Souls_20201115005611-scaled.jpg",
+    "https://images.gamersyde.com/image_stream-42884-4516_0002.jpg",
+    "https://www.4gamer.net/games/512/G051224/20201112118/SS/005.jpg",
+    "https://images.everyeye.it/img-notizie/demon-s-souls-ps5-tower-knight-protagonista-screenshot-v3-452776.jpg"
+  ],
+
+  6: [
+    "https://cdn.mos.cms.futurecdn.net/2757183492fae32b6b7323209357734a.jpg",
+    "https://cdn.mos.cms.futurecdn.net/6ab506e7198124099827eb0c09eb4495.jpg",
+    "https://www.legendra.com/media/screenshots/play4/bloodborne___game_of_the_year_edition/bloodborne___game_of_the_year_edition_screen_2.jpg",
+    "https://www.gamereactor.eu/media/22/bloodborne_1612253b.jpg"
+  ]
+};
+
+const saOriginalScreenshotLoader = loadGameScreenshots;
+const saOriginalFetch = window.fetch.bind(window);
+
+window.fetch = function(resource, options) {
+  const url = typeof resource === "string"
+    ? resource
+    : resource.url;
+
+  const match = url.match(/\/api\/steam\/sa-custom-(5|6)/);
+
+  if (match) {
+    const images = saCustomScreenshots[Number(match[1])];
+
+    return Promise.resolve({
+      ok: true,
+      json: async () => ({
+        screenshots: images.map(src => ({
+          thumbnail: src,
+          full: src
+        }))
+      })
+    });
+  }
+
+  return saOriginalFetch(resource, options);
+};
+
+loadGameScreenshots = function(id) {
+  if (!saCustomScreenshots[id]) {
+    return saOriginalScreenshotLoader(id);
+  }
+
+  const previousId = steamAppIds[id];
+
+  steamAppIds[id] = `sa-custom-${id}`;
+
+  const result = saOriginalScreenshotLoader(id);
+
+  if (previousId === undefined) {
+    delete steamAppIds[id];
+  } else {
+    steamAppIds[id] = previousId;
+  }
+
+  return result;
+};
+
+console.log("SOULS.ARCHIVE — CUSTOM SCREENSHOTS READY");
