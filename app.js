@@ -1968,3 +1968,47 @@ document.querySelectorAll(".device-option").forEach(button => {
 });
 
 console.log("SOULS.ARCHIVE — DEVICE TRANSITIONS READY");
+
+/* ==========================================
+   SOULS.ARCHIVE — SECTION TRANSITIONS
+   PRESERVE HOME + GAME DETAIL ANIMATIONS
+========================================== */
+
+showPage = function(pageId) {
+  const pages = [...document.querySelectorAll(".page")];
+
+  pages.forEach(page => {
+    page.classList.remove("sa-section-enter");
+    page.hidden = page.id !== pageId;
+  });
+
+  const target = document.getElementById(pageId);
+
+  // Animate only the main navigation sections.
+  const animatedSections = [
+    "wishlist-page",
+    "rankings-page",
+    "devices-page",
+    "about-page"
+  ];
+
+  if (target && animatedSections.includes(pageId)) {
+    void target.offsetWidth;
+    target.classList.add("sa-section-enter");
+  }
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === pageId
+    );
+  });
+
+  if (pageId === "wishlist-page") renderWishlist();
+  if (pageId === "devices-page") renderDevices();
+  if (pageId === "rankings-page") renderRankings();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+console.log("SOULS.ARCHIVE — SECTION TRANSITIONS READY");
