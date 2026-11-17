@@ -2030,8 +2030,9 @@ const saStorePrices = {
     13: "₹2,999"
   },
   nintendo: {
-    14: "$15.00",
-    15: "$19.99"
+  2: "$39.99",
+  14: "$15.00",
+  15: "$19.99"
   }
 };
 
@@ -2147,22 +2148,29 @@ function saBuildStoreGallery(gameId) {
   const track = gallery.querySelector(".sa-store-track");
 
   // Move the original Steam section without rebuilding or changing it.
+  if (steamAppIds[game.id] && steamSection) {
   const steamSlide = document.createElement("div");
   steamSlide.className = "sa-store-slide sa-store-slide-steam";
   steamSlide.appendChild(steamSection);
   track.appendChild(steamSlide);
-
+} else if (steamSection) {
+  steamSection.remove();
+}
   if (hasPlayStation) {
     const slide = document.createElement("div");
     slide.className = "sa-store-slide";
-    slide.innerHTML = saStoreCard("playstation", game);
+    slide.innerHTML =
+  `<h3 class="sa-store-slide-heading">PLAYSTATION STORE</h3>` +
+  saStoreCard("playstation", game);
     track.appendChild(slide);
   }
 
   if (hasNintendo) {
     const slide = document.createElement("div");
     slide.className = "sa-store-slide";
-    slide.innerHTML = saStoreCard("nintendo", game);
+    slide.innerHTML =
+  `<h3 class="sa-store-slide-heading">NINTENDO eSHOP</h3>` +
+  saStoreCard("nintendo", game);
     track.appendChild(slide);
   }
 
