@@ -1941,23 +1941,30 @@ loadGameScreenshots = function(id) {
 
 console.log("SOULS.ARCHIVE — CUSTOM SCREENSHOTS READY");
 
-/* SOULS.ARCHIVE — DEVICE SELECTOR */
+
+/* SOULS.ARCHIVE — DEVICE SELECTOR + TRANSITIONS */
 
 document.querySelectorAll(".device-option").forEach(button => {
-    button.addEventListener("click", () => {
-          const platform = button.dataset.platform;
-          const selector = document.getElementById("platform-select");
+  button.addEventListener("click", () => {
+    const platform = button.dataset.platform;
+    const selector = document.getElementById("platform-select");
+    const results = document.getElementById("device-results");
 
-                                if (!selector) return;
+    if (!selector || !results) return;
 
-                                selector.value = platform;
+    selector.value = platform;
 
-                                document.querySelectorAll(".device-option").forEach(option => {
-                                        option.classList.toggle("active", option === button);
-                                });
-
-                                renderDevices();
+    document.querySelectorAll(".device-option").forEach(option => {
+      option.classList.toggle("active", option === button);
     });
+
+    results.classList.remove("sa-device-transition");
+
+    renderDevices();
+
+    void results.offsetWidth;
+    results.classList.add("sa-device-transition");
+  });
 });
 
-console.log("SOULS.ARCHIVE — DEVICE SELECTOR READY");
+console.log("SOULS.ARCHIVE — DEVICE TRANSITIONS READY");
