@@ -1965,3 +1965,48 @@
     transition: none !important;
   }
 }
+
+/* ===== PREMIUM GLASS STORE BORDERS ===== */
+
+.sa-store-card {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,.48) !important;
+  box-shadow:
+    0 14px 35px rgba(0,0,0,.25),
+    inset 0 1px 1px rgba(255,255,255,.32),
+    inset 0 -1px 1px rgba(255,255,255,.08);
+}
+
+.sa-store-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,.22);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.12),
+    transparent 28%,
+    transparent 72%,
+    rgba(255,255,255,.08)
+  );
+}
+
+.sa-store-slide-heading {
+  margin: 0 0 17px !important;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 25px !important;
+  letter-spacing: 1.5px;
+  color: var(--text);
+}
+
+.sa-store-slide {
+  box-sizing: border-box;
+}
+
+.sa-store-slide > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
