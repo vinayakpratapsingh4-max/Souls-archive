@@ -1966,3 +1966,48 @@
     padding: 18px 14px;
   }
 }
+
+/* ===== GLOBAL NO BLUE TAP EFFECT ===== */
+
+* {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+button:active,
+a:active {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* ===== CINEMATIC RETURN HOME ===== */
+
+@keyframes saHomeReturn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(.985);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+#home-page.sa-home-return {
+  animation: saHomeReturn .65s cubic-bezier(.22,1,.36,1) both;
+}
