@@ -1786,3 +1786,113 @@ loadSteamTrailer = function(id) {
 
 console.log("SOULS.ARCHIVE Steam display fix loaded.");
 
+/* ==========================================
+   SOULS.ARCHIVE — YOUTUBE ONLY TRAILER SYSTEM
+   ALL 16 GAMES | NO STEAM
+========================================== */
+
+const saYTOnlyTrailers = {
+  1: "E3Huy2cdih0",
+  2: "KfjG9ZLGBHE",
+  3: "U6uyuIQYlfY",
+  4: "_zDZYrIUgKE",
+  5: "2TMs2E6cms4",
+  6: "G203e1HhixY",
+  7: "rXMX4YJ7Lks",
+  8: "kKO1s-CUZvY",
+  9: "u83VdXAVq08",
+  10: "kXZoKdr-xeo",
+  11: "oceLRiqQsko",
+  12: "hHt30e-r-G8",
+  13: "xlmdeQFyqC0",
+  14: "UAO2urG23S4",
+  15: "6XGeJwsUP9c",
+  16: "8AXi3ZZ6VS4"
+};
+
+let saYTCurrentGame = null;
+
+loadSteamTrailer = function(id) {
+  id = Number(id);
+
+  if (saYTCurrentGame === id &&
+      document.getElementById("sa-youtube-only")) {
+    return;
+  }
+
+  saYTCurrentGame = id;
+
+  const detail = document.getElementById("game-detail");
+  if (!detail) return;
+
+  document.getElementById("sa-trailer-carousel")?.remove();
+  document.getElementById("steam-trailer-section")?.remove();
+  document.getElementById("sa-youtube-only")?.remove();
+
+  const videoId = saYTOnlyTrailers[id];
+
+  const section = document.createElement("section");
+  section.id = "sa-youtube-only";
+  section.className = "detail-section sa-youtube-only";
+
+  section.innerHTML = `
+    <h3>OFFICIAL TRAILER</h3>
+
+    <div class="sa-yt-frame">
+      ${videoId ? `
+        <iframe
+          title="Official game trailer"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      ` : `
+        <p class="subtle">Trailer unavailable.</p>
+      `}
+    </div>
+
+    <p class="sa-yt-caption">EXPERIENCE THE GAME</p>
+  `;
+
+  const screenshotBox = document.getElementById("game-screenshots");
+  const screenshotSection = screenshotBox?.closest(".detail-section");
+
+  if (screenshotSection) {
+    detail.insertBefore(section, screenshotSection);
+  } else {
+    detail.appendChild(section);
+  }
+
+  if (!videoId) return;
+
+  const iframe = section.querySelector("iframe");
+  let started = false;
+
+  function startTrailer() {
+    if (started || !section.isConnected) return;
+
+    iframe.src =
+      `https://www.youtube-nocookie.com/embed/${videoId}` +
+      `?autoplay=1&mute=1&playsinline=1&controls=1&rel=0`;
+
+    started = true;
+  }
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+          startTrailer();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: [0.35] });
+
+    observer.observe(section);
+  } else {
+    startTrailer();
+  }
+};
+
+console.log("SOULS.ARCHIVE — YOUTUBE ONLY SYSTEM READY");
+
+
