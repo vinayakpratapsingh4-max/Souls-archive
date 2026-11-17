@@ -1786,9 +1786,11 @@ loadSteamTrailer = function(id) {
 
 console.log("SOULS.ARCHIVE Steam display fix loaded.");
 
+/* 
+
 /* ==========================================
-   SOULS.ARCHIVE — YOUTUBE ONLY TRAILER SYSTEM
-   ALL 16 GAMES | NO STEAM
+   SOULS.ARCHIVE — YOUTUBE PLAYER
+   ALL 16 GAMES | MANUAL PLAY | SOUND
 ========================================== */
 
 const saYTOnlyTrailers = {
@@ -1815,15 +1817,15 @@ let saYTCurrentGame = null;
 loadSteamTrailer = function(id) {
   id = Number(id);
 
-  if (saYTCurrentGame === id &&
-      document.getElementById("sa-youtube-only")) {
-    return;
-  }
-
-  saYTCurrentGame = id;
-
   const detail = document.getElementById("game-detail");
   if (!detail) return;
+
+  if (
+    saYTCurrentGame === id &&
+    document.getElementById("sa-youtube-only")
+  ) return;
+
+  saYTCurrentGame = id;
 
   document.getElementById("sa-trailer-carousel")?.remove();
   document.getElementById("steam-trailer-section")?.remove();
@@ -1839,61 +1841,32 @@ loadSteamTrailer = function(id) {
     <h3>OFFICIAL TRAILER</h3>
 
     <div class="sa-yt-frame">
-      ${videoId ? `
-        <iframe
-          title="Official game trailer"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>
-      ` : `
-        <p class="subtle">Trailer unavailable.</p>
-      `}
+      ${
+        videoId
+          ? `<iframe
+              title="Official game trailer"
+              src="https://www.youtube-nocookie.com/embed/${videoId}?playsinline=1&controls=1&rel=0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>`
+          : `<p class="subtle">Trailer unavailable.</p>`
+      }
     </div>
 
     <p class="sa-yt-caption">EXPERIENCE THE GAME</p>
   `;
 
-  const screenshotBox = document.getElementById("game-screenshots");
-  const screenshotSection = screenshotBox?.closest(".detail-section");
+  const screenshotBox =
+    document.getElementById("game-screenshots");
+
+  const screenshotSection =
+    screenshotBox?.closest(".detail-section");
 
   if (screenshotSection) {
     detail.insertBefore(section, screenshotSection);
   } else {
     detail.appendChild(section);
   }
-
-  if (!videoId) return;
-
-  const iframe = section.querySelector("iframe");
-  let started = false;
-
-  function startTrailer() {
-    if (started || !section.isConnected) return;
-
-    iframe.src =
-      `https://www.youtube-nocookie.com/embed/${videoId}` +
-      `?autoplay=1&mute=1&playsinline=1&controls=1&rel=0`;
-
-    started = true;
-  }
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
-          startTrailer();
-          observer.disconnect();
-        }
-      });
-    }, { threshold: [0.35] });
-
-    observer.observe(section);
-  } else {
-    startTrailer();
-  }
 };
 
-console.log("SOULS.ARCHIVE — YOUTUBE ONLY SYSTEM READY");
-
-
-
+console.log("SOULS.ARCHIVE — MANUAL YOUTUBE PLAYER READY");
