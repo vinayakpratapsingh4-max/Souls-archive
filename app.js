@@ -899,26 +899,149 @@ $("explore-button").addEventListener("click",()=>{showPage("home-page");});
 if("serviceWorker" in navigator && location.protocol!=="file:"){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 }
-// ===== WINTER INTRO =====
 
-const introScreen = document.getElementById("intro-screen");
-const enterButton = document.getElementById("enter-archive");
+/* ===== SOULS.ARCHIVE AUTH INTRO ===== */
 
-if (introScreen && enterButton) {
-  if (localStorage.getItem("soulsArchiveVisited") === "true") {
-    introScreen.remove();
-  } else {
-    enterButton.addEventListener("click", () => {
-      localStorage.setItem("soulsArchiveVisited", "true");
+(() => {
+  const intro = document.getElementById("intro-screen");
+  const actions = document.getElementById("sa-intro-actions");
+  const form = document.getElementById("sa-auth-form");
 
-      introScreen.classList.add("intro-exit");
+  const loginBtn = document.getElementById("sa-show-login");
+  const signupBtn = document.getElementById("sa-show-signup");
+  const guestBtn = document.getElementById("sa-guest");
+  const backBtn = document.getElementById("sa-auth-back");
 
-      setTimeout(() => {
-        introScreen.remove();
-      }, 1800);
-    });
+  const title = document.getElementById("sa-auth-title");
+  const submitBtn = document.getElementById("sa-auth-submit");
+  const email = document.getElementById("sa-auth-email");
+  const password = document.getElementById("sa-auth-password");
+  const message = document.getElementById("sa-auth-message");
+
+  if (!intro || !actions || !form) return;
+
+  let authMode = "login";
+
+  function enterArchive() {
+    intro.classList.add("intro-exit");
+
+    setTimeout(() => {
+      intro.remove();
+    }, 1800);
   }
-}
+
+  function showForm(mode) {
+    authMode = mode;
+
+    actions.hidden = true;
+    form.hidden = false;
+
+    title.textContent =
+      mode === "signup" ? "CREATE YOUR ACCOUNT" : "WELCOME BACK";
+
+    submitBtn.textContent =
+      mode === "signup" ? "CREATE ACCOUNT" : "SIGN IN";
+
+    password.autocomplete =
+      mode === "signup" ? "new-password" : "current-password";
+
+    message.textContent = "";
+    password.value = "";
+  }
+
+  function goBack() {
+    form.hidden = true;
+    actions.hidden = false;
+    message.textContent = "";
+    email.value = "";
+    password.value = "";
+  }
+
+  loginBtn?.addEventListener("click", () => showForm("login"));
+  signupBtn?.addEventListener("click", () => showForm("signup"));
+  backBtn?.addEventListener("click", goBack);
+
+  guestBtn?.addEventListener("click", enterArchive);
+
+  // Check whether the visitor already has an account session.
+  async function checkExistingSession() {
+    const client = window.supabaseClient;
+
+    if (!client) {
+      console.error("Supabase client is not connected.");
+      return;
+    }
+
+    const { data, error } = await client.auth.getSession();
+
+    if (error) {
+      console.error("Session check failed:", error);
+      return;
+    }
+
+    if (data.session) {
+      window.saCurrentUser = data.session.user;
+      enterArchive();
+    }
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const client = window.supabaseClient;
+
+    if (!client) {
+      message.textContent = "Connection unavailable. Please refresh.";
+      return;
+    }
+
+    const userEmail = email.value.trim();
+    const userPassword = password.value;
+
+    submitBtn.disabled = true;
+    message.textContent = "PLEASE WAIT...";
+
+    try {
+      let result;
+
+      if (authMode === "signup") {
+        result = await client.auth.signUp({
+          email: userEmail,
+          password: userPassword
+        });
+      } else {
+        result = await client.auth.signInWithPassword({
+          email: userEmail,
+          password: userPassword
+        });
+      }
+
+      if (result.error) throw result.error;
+
+      if (authMode === "signup" && !result.data.session) {
+        message.textContent =
+          "Account created! Please verify your email, then sign in.";
+        return;
+      }
+
+      window.saCurrentUser = result.data.user;
+      message.textContent = "WELCOME TO SOULS.ARCHIVE";
+
+      enterArchive();
+
+    } catch (error) {
+      console.error("Authentication error:", error);
+
+      message.textContent =
+        error.message || "Something went wrong. Please try again.";
+
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  checkExistingSession();
+})();
 
 /* ===== SOULS.ARCHIVE MOBILE BACK NAVIGATION ===== */
 
