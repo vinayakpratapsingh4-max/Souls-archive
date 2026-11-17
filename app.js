@@ -1878,7 +1878,7 @@ console.log("SOULS.ARCHIVE — MANUAL YOUTUBE PLAYER READY");
 
 const saCustomScreenshots = {
   5: [
-    "https://www.videogameschronicle.com/files/2020/11/Demon_s-Souls_20201115005611-scaled.jpg",
+    "https://static.actugaming.net/media/2020/11/demons-souls-5.jpg",
     "https://images.gamersyde.com/image_stream-42884-4516_0002.jpg",
     "https://www.4gamer.net/games/512/G051224/20201112118/SS/005.jpg",
     "https://images.everyeye.it/img-notizie/demon-s-souls-ps5-tower-knight-protagonista-screenshot-v3-452776.jpg"
@@ -1888,8 +1888,7 @@ const saCustomScreenshots = {
     "https://cdn.mos.cms.futurecdn.net/2757183492fae32b6b7323209357734a.jpg",
     "https://cdn.mos.cms.futurecdn.net/6ab506e7198124099827eb0c09eb4495.jpg",
     "https://www.legendra.com/media/screenshots/play4/bloodborne___game_of_the_year_edition/bloodborne___game_of_the_year_edition_screen_2.jpg",
-    "https://www.gamereactor.eu/media/22/bloodborne_1612253b.jpg"
-  ]
+    "https://64.media.tumblr.com/609fdf59a1978e45f56ac54d18f6f3ea/33499e86bc792e33-98/s2048x3072/50020706258d947f3b1ebf83403973959a692455.jpg"
 };
 
 const saOriginalScreenshotLoader = loadGameScreenshots;
