@@ -1578,3 +1578,48 @@
     animation: none;
   }
 }
+/* REMOVE BLUE TAP / FOCUS EFFECT */
+
+.device-option,
+.device-option:focus,
+.device-option:active {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+.device-option.active {
+  background: linear-gradient(145deg, #383326, #211f19) !important;
+  border-color: #c5a66b !important;
+  box-shadow: 0 0 22px rgba(197,166,107,.12) !important;
+}
+
+.device-option:focus-visible {
+  outline: 2px solid #c5a66b;
+  outline-offset: 3px;
+}
+/* DEVICE PAGE ENTRANCE TRANSITION */
+
+@keyframes saPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+#devices-page:not([hidden]) {
+  animation: saPageEnter .55s cubic-bezier(.22,1,.36,1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #devices-page:not([hidden]) {
+    animation: none;
+  }
+}
