@@ -1897,32 +1897,3 @@ console.log("SOULS.ARCHIVE — YOUTUBE ONLY SYSTEM READY");
 
 
 
-/* SOULS.ARCHIVE — PLAY WITH SOUND */
-(function () {
-  function enableSoundOnPlay() {
-    document.querySelectorAll(
-      '#sa-youtube-only iframe'
-    ).forEach(function (iframe) {
-      const src = iframe.getAttribute('src');
-      if (!src || !src.includes('youtube.com/embed/')) return;
-
-      const url = new URL(src);
-      if (url.searchParams.get('autoplay') === '0' &&
-          url.searchParams.get('mute') === '0') return;
-
-      url.searchParams.set('autoplay', '0');
-      url.searchParams.set('mute', '0');
-      url.searchParams.set('playsinline', '1');
-      url.searchParams.set('controls', '1');
-
-      iframe.setAttribute('src', url.toString());
-    });
-  }
-
-  enableSoundOnPlay();
-
-  new MutationObserver(enableSoundOnPlay).observe(
-    document.documentElement,
-    { childList: true, subtree: true }
-  );
-})();
