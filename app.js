@@ -1889,6 +1889,7 @@ const saCustomScreenshots = {
     "https://cdn.mos.cms.futurecdn.net/6ab506e7198124099827eb0c09eb4495.jpg",
     "https://www.legendra.com/media/screenshots/play4/bloodborne___game_of_the_year_edition/bloodborne___game_of_the_year_edition_screen_2.jpg",
     "https://64.media.tumblr.com/609fdf59a1978e45f56ac54d18f6f3ea/33499e86bc792e33-98/s2048x3072/50020706258d947f3b1ebf83403973959a692455.jpg"
+    ]
 };
 
 const saOriginalScreenshotLoader = loadGameScreenshots;
