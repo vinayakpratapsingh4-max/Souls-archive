@@ -2225,3 +2225,130 @@ a:active {
     font-size: 11px;
   }
 }
+
+/* ===== SOULS.ARCHIVE INTRO AUTH DESIGN ===== */
+
+.sa-intro-actions {
+  width: min(340px, 88vw);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  animation: introReveal 1.5s ease both;
+}
+
+.sa-intro-actions button,
+#sa-auth-form button {
+  width: 100%;
+  min-height: 49px;
+  padding: 13px 18px;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.sa-intro-primary,
+#sa-auth-submit {
+  background: linear-gradient(120deg, #b9a071, #d5c49b);
+  color: #111714;
+  border: 1px solid #d5c49b;
+}
+
+.sa-intro-primary:hover,
+#sa-auth-submit:hover {
+  box-shadow: 0 0 25px #d5c49b55;
+  transform: translateY(-2px);
+}
+
+.sa-intro-secondary {
+  background: rgba(12, 22, 30, .65);
+  color: #e7edf0;
+  border: 1px solid #9cabb5;
+}
+
+.sa-intro-secondary:hover {
+  background: rgba(80, 100, 110, .4);
+}
+
+.sa-intro-guest {
+  background: transparent;
+  border: 0;
+  color: #c5d2dc;
+  font-family: Inter, sans-serif !important;
+  font-size: 10px !important;
+}
+
+.sa-intro-guest:hover {
+  color: white;
+  letter-spacing: 3.5px;
+}
+
+/* AUTH FORM */
+
+#sa-auth-form {
+  width: min(340px, 88vw);
+  margin: 24px auto 0;
+  animation: introReveal .5s ease both;
+}
+
+#sa-auth-title {
+  color: #d5c49b;
+  font: 600 21px Cinzel, serif;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+#sa-auth-form input {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  padding: 15px;
+  border: 1px solid rgba(180, 195, 205, .35);
+  border-radius: 5px;
+  background: rgba(8, 15, 21, .8);
+  color: #f0eee8;
+  font: 13px Inter, sans-serif;
+  outline: none;
+}
+
+#sa-auth-form input:focus {
+  border-color: #c5a56d;
+  box-shadow: 0 0 12px #c5a56d22;
+}
+
+#sa-auth-back {
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid #82929c;
+  color: #dce3e7;
+}
+
+#sa-auth-message {
+  min-height: 18px;
+  color: #d5c49b;
+  font: 11px Inter, sans-serif;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+#sa-auth-form button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+@media(max-height: 650px) {
+  .intro-content {
+    padding: 12px;
+  }
+
+  .intro-subtitle {
+    margin-bottom: 22px;
+  }
+
+  #sa-auth-form {
+    margin-top: 12px;
+  }
+}
