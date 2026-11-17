@@ -1665,9 +1665,17 @@
 
 /* 
 
-/* ===== SOULS.ARCHIVE STORE GALLERY FINAL LAYOUT ===== */
 
-/* Black gallery background */
+/* =====================================
+   SOULS.ARCHIVE STORE GALLERY
+   COMPLETE SONY + NINTENDO DESIGN
+===================================== */
+
+.sa-store-gallery {
+  width: 100%;
+  margin-top: 25px;
+}
+
 .sa-store-viewport {
   width: 100%;
   overflow: hidden;
@@ -1677,79 +1685,284 @@
   touch-action: pan-y;
 }
 
-/* Keep slide movement consistent */
 .sa-store-track {
   display: flex;
   width: 100%;
-  gap: 0 !important;
+  gap: 0;
   will-change: transform;
 }
 
 .sa-store-slide {
-  flex: 0 0 100% !important;
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
-
-  /* Equal black spacing around every card */
-  padding: 24px 22px !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  box-sizing: border-box !important;
-  background: transparent !important;
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  padding: 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
 }
 
-/* All headings use Steam's original size */
-.sa-store-slide-heading,
-.sa-store-slide .detail-section > h3 {
+/* MATCH STEAM HEADING SIZE */
+
+.sa-store-slide-heading {
   width: 100%;
   max-width: 560px;
-  margin: 0 0 17px !important;
+  margin: 0 auto 16px !important;
   font-family: Cinzel, Georgia, serif !important;
   font-size: 20px !important;
-  line-height: 1.4 !important;
-  letter-spacing: 1px !important;
+  line-height: 1.4;
+  letter-spacing: 1px;
+  color: var(--text);
   text-align: left;
-  white-space: normal !important;
 }
 
-/* Centre Steam's original section */
+/* CENTER ALL STORE CARDS */
+
+.sa-store-slide > .sa-store-card,
 .sa-store-slide-steam > .detail-section {
-  width: 100% !important;
-  max-width: 560px !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-/* Centre Sony and Nintendo cards */
-.sa-store-slide > .sa-store-card {
-  width: 100% !important;
-  max-width: 560px !important;
-  min-width: 0 !important;
-  min-height: 290px !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
-}
+/* BASE CARD */
 
-/* Keep card contents inside their borders */
 .sa-store-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
   overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.35);
+  box-shadow:
+    0 14px 35px rgba(0,0,0,.3),
+    inset 0 1px 1px rgba(255,255,255,.22);
+}
+
+.sa-store-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.12),
+    transparent 35%,
+    transparent 75%,
+    rgba(255,255,255,.07)
+  );
+}
+
+.sa-store-card-top {
+  min-height: 58px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  padding: 15px 18px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  border-bottom: 1px solid rgba(255,255,255,.16);
+}
+
+.sa-store-card-top small {
+  width: 100%;
+  margin-left: 16px;
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  opacity: .7;
+}
+
+.sa-store-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
-/* Keep the black frame visible */
-.sa-store-card,
-.sa-store-slide-steam #steam-price {
-  position: relative;
+.sa-store-card-main {
+  flex: 1;
+  padding: 24px 20px;
 }
 
-/* Responsive spacing */
-@media (max-width: 400px) {
+.sa-store-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  opacity: .7;
+}
+
+.sa-store-card-main strong {
+  display: block;
+  margin-top: 12px;
+  font-family: Cinzel, Georgia, serif;
+  font-size: clamp(29px, 8vw, 40px);
+  line-height: 1.25;
+}
+
+.sa-store-card-main p {
+  margin-top: 11px;
+  font-size: 11px;
+  line-height: 1.7;
+  opacity: .75;
+}
+
+.sa-store-card-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 19px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-top: 1px solid rgba(255,255,255,.17);
+}
+
+.sa-store-visit {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 14px 15px;
+  padding: 0 17px;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 7px;
+  text-decoration: none !important;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  transition: .2s ease;
+}
+
+.sa-store-visit:active {
+  transform: scale(.98);
+}
+
+/* SONY — METALLIC BLUE GREY */
+
+.sa-store-playstation {
+  color: #edf3f8;
+  background: linear-gradient(
+    145deg,
+    #354b60,
+    #223343 55%,
+    #142330
+  );
+  border-color: rgba(174,205,231,.55);
+}
+
+.sa-store-playstation .sa-store-indicator {
+  background: #9bc9ed;
+  box-shadow: 0 0 10px rgba(155,201,237,.5);
+}
+
+.sa-store-playstation .sa-store-card-top,
+.sa-store-playstation .sa-store-card-footer {
+  color: #d5e5f2;
+}
+
+.sa-store-playstation .sa-store-card-main strong {
+  color: #ffffff;
+}
+
+.sa-store-playstation .sa-store-visit {
+  color: #ffffff !important;
+  background: linear-gradient(110deg,#49647c,#30475c);
+}
+
+/* NINTENDO — SIGNATURE RED */
+
+.sa-store-nintendo {
+  color: #ffffff;
+  background: linear-gradient(
+    145deg,
+    #d52b40,
+    #a8142b 65%,
+    #801020
+  );
+  border-color: rgba(255,190,198,.5);
+}
+
+.sa-store-nintendo .sa-store-indicator {
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255,255,255,.5);
+}
+
+.sa-store-nintendo .sa-store-card-main strong {
+  color: #ffffff;
+}
+
+.sa-store-nintendo .sa-store-visit {
+  color: #ffffff !important;
+  background: linear-gradient(110deg,#8d1227,#701020);
+}
+
+/* SLIDER CONTROLS */
+
+.sa-store-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 15px;
+}
+
+.sa-store-arrow {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--gold);
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.sa-store-arrow:disabled {
+  opacity: .25;
+}
+
+.sa-store-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sa-store-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: #596052;
+  transition: .3s ease;
+}
+
+.sa-store-dot.active {
+  width: 22px;
+  background: var(--gold);
+}
+
+.sa-store-hint {
+  margin-top: 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+
+@media(max-width:400px) {
   .sa-store-slide {
-    padding: 20px 16px !important;
+    padding: 18px 14px;
   }
 }
