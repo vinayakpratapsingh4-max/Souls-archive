@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+hu@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   color-scheme: dark;
@@ -2010,4 +2010,17 @@ a:active {
 
 #home-page.sa-home-return {
   animation: saHomeReturn .65s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ===== KEEP HOME BACKGROUND FIXED ===== */
+
+#home-page {
+  background-attachment: fixed !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+#home-page.sa-home-return {
+  background-attachment: fixed !important;
 }
