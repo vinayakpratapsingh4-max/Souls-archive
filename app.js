@@ -2301,3 +2301,15 @@ Object.assign(saStoreLinks.playstation, {
 });
 
 console.log("SOULS.ARCHIVE — STORE DATA FIXES LOADED");
+
+/* DARK SOULS II + III PLAYSTATION PRICE FIX */
+
+Object.assign(saStorePrices.playstation, {
+  3: "₹1,499",
+  4: "₹2,999"
+});
+
+Object.assign(saStoreLinks.playstation, {
+  3: "https://store.playstation.com/en-in/concept/226237/",
+  4: "https://store.playstation.com/en-in/concept/201190"
+});
