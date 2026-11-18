@@ -2986,3 +2986,241 @@ console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
 
   console.log("SOULS.ARCHIVE AUTH + ACCOUNT CONNECTED");
 })();
+
+/* ===== SOULS.ARCHIVE CLOUD SYNC ===== */
+
+(() => {
+  const client = window.supabaseClient;
+  if (!client || window.saCloudSyncInstalled) return;
+
+  window.saCloudSyncInstalled = true;
+
+  const originalSetItem = Storage.prototype.setItem;
+  let activeUserId = null;
+  let cloudReady = false;
+  let loadingCloud = false;
+  let syncTimer = null;
+
+  const keys = [
+    "soulsArchiveWishlist",
+    "soulsArchiveCompleted",
+    "sa-trophies-5",
+    "sa-trophies-6"
+  ];
+
+  function readLocal(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeLocal(key, value) {
+    originalSetItem.call(
+      localStorage,
+      key,
+      JSON.stringify(value)
+    );
+  }
+
+  async function replaceRows(table, userId, rows, gameId = null) {
+    let deletion = client.from(table)
+      .delete()
+      .eq("user_id", userId);
+
+    if (gameId !== null) {
+      deletion = deletion.eq("game_id", gameId);
+    }
+
+    const { error: deleteError } = await deletion;
+    if (deleteError) throw deleteError;
+
+    if (rows.length) {
+      const { error } = await client.from(table).insert(rows);
+      if (error) throw error;
+    }
+  }
+
+  async function uploadAll() {
+    if (!activeUserId || !cloudReady || loadingCloud) return;
+
+    const uid = activeUserId;
+
+    const wishlistRows = [...new Set(readLocal(keys[0]).map(Number))]
+      .map(game_id => ({ user_id: uid, game_id }));
+
+    const completedRows = [...new Set(readLocal(keys[1]).map(Number))]
+      .map(game_id => ({ user_id: uid, game_id }));
+
+    await replaceRows("wishlists", uid, wishlistRows);
+    await replaceRows("completed_games", uid, completedRows);
+
+    for (const gameId of [5, 6]) {
+      const earned = [...new Set(
+        readLocal("sa-trophies-" + gameId).map(Number)
+      )];
+
+      const trophyRows = earned.map(index => ({
+        user_id: uid,
+        game_id: gameId,
+        trophy_id: String(index),
+        unlocked: true
+      }));
+
+      await replaceRows("trophies", uid, trophyRows, gameId);
+    }
+
+    console.log("SOULS.ARCHIVE: Cloud progress saved.");
+  }
+
+  function scheduleUpload() {
+    if (!activeUserId || !cloudReady || loadingCloud) return;
+
+    clearTimeout(syncTimer);
+
+    syncTimer = setTimeout(async () => {
+      try {
+        await uploadAll();
+      } catch (error) {
+        console.error("Cloud save failed:", error);
+        if (typeof notify === "function") {
+          notify("Cloud sync failed. Check your connection.");
+        }
+      }
+    }, 500);
+  }
+
+  // Intercept existing local saves without changing game functions.
+  Storage.prototype.setItem = function(key, value) {
+    originalSetItem.call(this, key, value);
+
+    if (
+      this === localStorage &&
+      keys.includes(key) &&
+      !loadingCloud
+    ) {
+      scheduleUpload();
+    }
+  };
+
+  async function syncUser(user) {
+    if (!user || activeUserId === user.id && cloudReady) return;
+
+    activeUserId = user.id;
+    cloudReady = false;
+    loadingCloud = true;
+
+    try {
+      const uid = user.id;
+
+      const [wishlistResult, completedResult, trophyResult] =
+        await Promise.all([
+          client.from("wishlists")
+            .select("game_id")
+            .eq("user_id", uid),
+
+          client.from("completed_games")
+            .select("game_id")
+            .eq("user_id", uid),
+
+          client.from("trophies")
+            .select("game_id,trophy_id,unlocked")
+            .eq("user_id", uid)
+        ]);
+
+      if (wishlistResult.error) throw wishlistResult.error;
+      if (completedResult.error) throw completedResult.error;
+      if (trophyResult.error) throw trophyResult.error;
+
+      // Merge existing local progress with cloud progress.
+      const cloudWishlist = wishlistResult.data.map(r => Number(r.game_id));
+      const cloudCompleted = completedResult.data.map(r => Number(r.game_id));
+
+      const mergedWishlist = [...new Set([
+        ...readLocal(keys[0]).map(Number),
+        ...cloudWishlist
+      ])];
+
+      const mergedCompleted = [...new Set([
+        ...readLocal(keys[1]).map(Number),
+        ...cloudCompleted
+      ])];
+
+      const trophiesByGame = { 5: [], 6: [] };
+
+      for (const row of trophyResult.data) {
+        if (row.unlocked && trophiesByGame[row.game_id]) {
+          trophiesByGame[row.game_id].push(Number(row.trophy_id));
+        }
+      }
+
+      for (const gameId of [5, 6]) {
+        trophiesByGame[gameId] = [...new Set([
+          ...readLocal("sa-trophies-" + gameId).map(Number),
+          ...trophiesByGame[gameId]
+        ])];
+      }
+
+      writeLocal(keys[0], mergedWishlist);
+      writeLocal(keys[1], mergedCompleted);
+      writeLocal(keys[2], trophiesByGame[5]);
+      writeLocal(keys[3], trophiesByGame[6]);
+
+      // Refresh existing interface.
+      wishlist = mergedWishlist;
+      completedGames = mergedCompleted;
+
+      renderWishlist();
+      renderRankings();
+
+      loadingCloud = false;
+      cloudReady = true;
+
+      // Save merged data to the account.
+      await uploadAll();
+
+      console.log("SOULS.ARCHIVE: Cloud data loaded successfully.");
+
+      if (typeof notify === "function") {
+        notify("Archive progress synced!");
+      }
+
+    } catch (error) {
+      loadingCloud = false;
+      cloudReady = false;
+
+      console.error("Cloud sync error:", error);
+
+      if (typeof notify === "function") {
+        notify("Cloud sync unavailable. Local progress is safe.");
+      }
+    }
+  }
+
+  // Save changes whenever a logged-in user changes data.
+  client.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      setTimeout(() => syncUser(session.user), 0);
+    } else {
+      activeUserId = null;
+      cloudReady = false;
+      clearTimeout(syncTimer);
+    }
+  });
+
+  // Restore cloud data for an existing login.
+  client.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Session check failed:", error);
+      return;
+    }
+
+    if (data.session?.user) {
+      syncUser(data.session.user);
+    }
+  });
+
+  console.log("SOULS.ARCHIVE — CLOUD SYNC READY");
+})();
