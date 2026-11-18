@@ -52,14 +52,12 @@
     required
   >
 
-  <input
-    id="sa-auth-password"
-    type="password"
+ <div class="sa-password-wrap">
+  <input id="sa-auth-password" type="password"
     placeholder="Password"
-    autocomplete="current-password"
-    minlength="6"
-    required
-  >
+    autocomplete="current-password" minlength="6" required>
+  <button type="button" id="sa-toggle-password">SHOW</button>
+</div>
 
   <button type="submit" id="sa-auth-submit">
     SIGN IN
