@@ -41,34 +41,43 @@
 </div>
 
 <form id="sa-auth-form" hidden>
+    <h2 id="sa-auth-title">WELCOME BACK</h2>
 
-  <h2 id="sa-auth-title">WELCOME BACK</h2>
+    <input
+          id="sa-auth-username"
+          type="text"
+          placeholder="Choose a username"
+          autocomplete="username"
+          minlength="3"
+          maxlength="20"
+          pattern="[A-Za-z0-9_]+"
+          hidden
+        >
 
-  <input
-    id="sa-auth-email"
-    type="email"
-    placeholder="Email address"
-    autocomplete="email"
-    required
-  >
+    <input
+          id="sa-auth-email"
+          type="email"
+          placeholder="Email address"
+          autocomplete="email"
+          required
+        >
 
- <div class="sa-password-wrap">
-  <input id="sa-auth-password" type="password"
-    placeholder="Password"
-    autocomplete="current-password" minlength="6" required>
-  <button type="button" id="sa-toggle-password">SHOW</button>
-</div>
+    <div class="sa-password-wrap">
+          <input
+                  id="sa-auth-password"
+                  type="password"
+                  placeholder="Password"
+                  autocomplete="current-password"
+                  minlength="6"
+                  required
+                >
+          <button type="button" id="sa-toggle-password">SHOW</button>
+    </div>
 
-  <button type="submit" id="sa-auth-submit">
-    SIGN IN
-  </button>
+    <button type="submit" id="sa-auth-submit">SIGN IN</button>
+    <button type="button" id="sa-auth-back">← BACK</button>
 
-  <button type="button" id="sa-auth-back">
-    ← BACK
-  </button>
-
-  <p id="sa-auth-message" role="status"></p>
-
+    <p id="sa-auth-message" role="status"></p>
 </form>
 
   </div>
