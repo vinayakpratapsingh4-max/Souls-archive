@@ -3089,3 +3089,266 @@ console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
      dwtrnul
      egtot SOEUa scu; }; recon();
 )
+
+/* ===== SOULS.ARCHIVE AUTH + ACCOUNT CONNECTION FIX ===== */
+
+(() => {
+  const client = window.supabaseClient;
+  const intro = document.getElementById("intro-screen");
+  const actions = document.getElementById("sa-intro-actions");
+  const form = document.getElementById("sa-auth-form");
+
+  if (!client || !intro || !actions || !form) {
+    console.error("SOULS.ARCHIVE: Auth elements missing.");
+    return;
+  }
+
+  const $ = id => document.getElementById(id);
+
+  const login = $("sa-show-login");
+  const signup = $("sa-show-signup");
+  const guest = $("sa-guest");
+  const back = $("sa-auth-back");
+  const username = $("sa-auth-username");
+  const email = $("sa-auth-email");
+  const password = $("sa-auth-password");
+  const message = $("sa-auth-message");
+  const submit = $("sa-auth-submit");
+
+  let mode = "login";
+
+  function enterArchive() {
+    intro.classList.add("intro-exit");
+    setTimeout(() => intro.remove(), 1800);
+  }
+
+  function showAuth(type) {
+    mode = type;
+    actions.hidden = true;
+    form.hidden = false;
+
+    $("sa-auth-title").textContent =
+      type === "signup" ? "CREATE YOUR ACCOUNT" : "WELCOME BACK";
+
+    submit.textContent =
+      type === "signup" ? "CREATE ACCOUNT" : "SIGN IN";
+
+    username.hidden = type !== "signup";
+    username.required = type === "signup";
+
+    password.autocomplete =
+      type === "signup" ? "new-password" : "current-password";
+
+    message.textContent = "";
+  }
+
+  login.addEventListener("click", () => showAuth("login"));
+  signup.addEventListener("click", () => showAuth("signup"));
+
+  back.addEventListener("click", () => {
+    form.hidden = true;
+    actions.hidden = false;
+    message.textContent = "";
+  });
+
+  guest.addEventListener("click", enterArchive);
+
+  // Account page
+  const nav = document.querySelector(".bottom-nav");
+  const main = document.querySelector("main");
+
+  const page = document.createElement("section");
+  page.id = "sa-account-page";
+  page.className = "page";
+  page.hidden = true;
+
+  page.innerHTML = `
+    <p class="eyebrow">YOUR PERSONAL ARCHIVE</p>
+    <h1 class="page-title">MY ACCOUNT</h1>
+
+    <div class="panel sa-account-card">
+      <div style="font-size:45px;color:#c5a56d">♙</div>
+      <h2 id="sa-account-name">GUEST</h2>
+      <p class="subtle" id="sa-account-email">Guest access</p>
+
+      <div id="sa-account-guest">
+        <button class="gold-button" id="sa-account-login">LOG IN</button>
+        <button class="gold-button" id="sa-account-signup">CREATE ACCOUNT</button>
+      </div>
+
+      <div id="sa-account-member" hidden>
+        <input id="sa-account-edit"
+          placeholder="New username"
+          minlength="3" maxlength="20">
+        <button class="gold-button" id="sa-account-save">SAVE USERNAME</button>
+        <button class="gold-button" id="sa-account-logout">LOG OUT</button>
+      </div>
+
+      <p id="sa-account-status" role="status"></p>
+    </div>
+  `;
+
+  main.appendChild(page);
+
+  const accountNav = document.createElement("button");
+  accountNav.type = "button";
+  accountNav.className = "nav-item";
+  accountNav.dataset.page = "sa-account-page";
+  accountNav.innerHTML = "<span>♙</span>ACCOUNT";
+  nav.appendChild(accountNav);
+
+  accountNav.addEventListener("click", () => {
+    showPage("sa-account-page");
+    refreshAccount();
+  });
+
+  $("sa-account-login").onclick = () => {
+    intro.classList.remove("intro-exit");
+    document.body.prepend(intro);
+    showAuth("login");
+  };
+
+  $("sa-account-signup").onclick = () => {
+    intro.classList.remove("intro-exit");
+    document.body.prepend(intro);
+    showAuth("signup");
+  };
+
+  async function refreshAccount() {
+    const { data } = await client.auth.getUser();
+    const user = data.user;
+
+    $("sa-account-guest").hidden = !!user;
+    $("sa-account-member").hidden = !user;
+
+    if (!user) {
+      $("sa-account-name").textContent = "GUEST";
+      $("sa-account-email").textContent = "Guest access";
+      return;
+    }
+
+    window.saCurrentUser = user;
+
+    const { data: profile } = await client
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const name = profile?.username ||
+      user.user_metadata?.username || "ARCHIVE MEMBER";
+
+    $("sa-account-name").textContent = name;
+    $("sa-account-email").textContent = user.email || "";
+    $("sa-account-edit").value = name;
+  }
+
+  $("sa-account-save").onclick = async () => {
+    const name = $("sa-account-edit").value.trim();
+
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(name)) {
+      $("sa-account-status").textContent = "Use 3–20 letters, numbers or underscores.";
+      return;
+    }
+
+    const { data } = await client.auth.getUser();
+    if (!data.user) return;
+
+    const { error } = await client
+      .from("profiles")
+      .update({ username: name })
+      .eq("id", data.user.id);
+
+    if (error) {
+      $("sa-account-status").textContent = error.message;
+      return;
+    }
+
+    await client.auth.updateUser({ data: { username: name } });
+    $("sa-account-status").textContent = "USERNAME UPDATED";
+    refreshAccount();
+  };
+
+  $("sa-account-logout").onclick = async () => {
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+      $("sa-account-status").textContent = error.message;
+      return;
+    }
+
+    window.saCurrentUser = null;
+    refreshAccount();
+  };
+
+  // Signup and login
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    submit.disabled = true;
+    message.textContent = "PLEASE WAIT...";
+
+    try {
+      let result;
+
+      if (mode === "signup") {
+        const name = username.value.trim();
+
+        if (!/^[A-Za-z0-9_]{3,20}$/.test(name)) {
+          throw new Error("Enter a valid username.");
+        }
+
+        result = await client.auth.signUp({
+          email: email.value.trim(),
+          password: password.value,
+          options: { data: { username: name } }
+        });
+      } else {
+        result = await client.auth.signInWithPassword({
+          email: email.value.trim(),
+          password: password.value
+        });
+      }
+
+      if (result.error) throw result.error;
+      if (!result.data.session) {
+        throw new Error("No session. Check email confirmation settings.");
+      }
+
+      window.saCurrentUser = result.data.user;
+
+      if (mode === "signup") {
+        const { error } = await client.from("profiles")
+          .update({ username: username.value.trim() })
+          .eq("id", result.data.user.id);
+
+        if (error) throw error;
+      }
+
+      message.textContent = "WELCOME TO THE ARCHIVE";
+      enterArchive();
+
+    } catch (error) {
+      message.textContent = error.message || "Authentication failed.";
+    } finally {
+      submit.disabled = false;
+    }
+  }, true);
+
+  // Restore existing session
+  client.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      window.saCurrentUser = data.session.user;
+      enterArchive();
+    }
+  });
+
+  client.auth.onAuthStateChange((event, session) => {
+    window.saCurrentUser = session?.user || null;
+  });
+
+  refreshAccount();
+
+  console.log("SOULS.ARCHIVE AUTH + ACCOUNT CONNECTED");
+})();
