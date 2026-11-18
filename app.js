@@ -2844,3 +2844,248 @@ console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
                                  }
    }, true);
 })();
+
+
+/* ===== SOULS.ARCHIVE ACCOUNT SECTION ===== */
+
+(() => {
+    const nav = document.querySelector(".bottom-nav");
+    const main = document.querySelector("main");
+    const supabase = window.supabaseClient;
+
+   if (!nav || !main || !supabase) return;
+    if (document.getElementById("sa-account-page")) return;
+
+   // Create account navigation button
+   const navButton = document.createElement("button");
+    navButton.className = "nav-item";
+    navButton.dataset.page = "sa-account-page";
+    navButton.innerHTML = "<span>♙</span>ACCOUNT";
+    nav.appendChild(navButton);
+
+   // Create account page
+   const page = document.createElement("section");
+    page.id = "sa-account-page";
+    page.className = "page";
+    page.hidden = true;
+
+   page.innerHTML = `
+       <p class="eyebrow">YOUR PERSONAL ARCHIVE</p>
+           <h1 class="page-title">My Account</h1>
+               <p class="subtle intro">Your identity within the archive.</p>
+
+                   <div class="panel sa-account-card">
+                         <div class="sa-account-avatar">♙</div>
+                               <p class="eyebrow">ARCHIVE MEMBER</p>
+                                     <h2 id="sa-account-username">GUEST</h2>
+                                           <p class="subtle" id="sa-account-email">
+                                                   Exploring as a guest
+                                                         </p>
+                                                               <div class="sa-accountdivider"></div>      <div id="saaccountguest">        <p class="subtle">Sign in to access your personal account.</p>        <button class="saaccountbutton" id="sa-accountlogin">          LOG IN        </button>
+                                                                       <button class="saaccountbutton secondary"
+                                                                                 id="sa-accountsignup">          CREATE ACCOUNT        </button>
+                                                                                       </div>
+                                                                                             <div id="saaccountmember" hidden>
+                                                                                                     <label class="fieldlabel" for="saedit-username">
+                                                                                                               YOUR USERNAME        </label>        <input id="sa-edit-username"
+                                                                                                                         class="sa-account-input"
+                                                                                                                                   type="text"
+                                                                                                                                             minlength="3"
+                                                                                                                                                       maxlength="20"
+                                                                                                                                                                 pattern="[A-Za-z0-9_]+"
+                                                                                                                                                                           placeholder="Username">
+                                                                                                                                                                           
+                                                                                                                                                                                   <button class="sa-account-button"
+                                                                                                                                                                                             id="sa-save-username">
+                                                                                                                                                                                                       SAVE USERNAME
+                                                                                                                                                                                                               </button>
+                                                                                                                                                                                                               
+                                                                                                                                                                                                                       <button class="sa-account-button secondary"
+                                                                                                                                                                                                                                 id="sa-account-logout">
+                                                                                                                                                                                                                                           LOG OUT
+                                                                                                                                                                                                                                                   </button>
+                                                                                                                                                                                                                                                         </div>
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                               <p id="sa-account-message" role="status"></p>
+                                                                                                                                                                                                                                                                   </div>
+                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                       <div class="panel sa-account-info">
+                                                                                                                                                                                                                                                                             <p class="eyebrow">THE ARCHIVE</p>
+                                                                                                                                                                                                                                                                                   <h3>Your journey continues.</h3>
+                                                                                                                                                                                                                                                                                         <p class="subtle">
+                                                                                                                                                                                                                                                                                                 Your account is the foundation for your future
+                                                                                                                                                                                                                                                                                                         cloud-saved wishlist and trophy collection.
+                                                                                                                                                                                                                                                                                                               </p>
+                                                                                                                                                                                                                                                                                                                   </div>
+                                                                                                                                                                                                                                                                                                                     `;
+
+   main.appendChild(page);
+
+   // Account styling
+   const style = document.createElement("style");
+    style.textContent = `
+        .sa-account-card {
+              max-width: 520px;
+                    margin: 20px auto;
+                          padding: 28px 20px;
+                                text-align: center;
+                                      background: linear-gradient(145deg,#202b21,#111812);
+                                            border: 1px solid #75613e;
+                                                  box-shadow: 0 15px 45px #0005;
+                                                      }
+
+                                                          .sa-account-avatar {
+                                                                width: 76px;
+                                                                      height: 76px;
+                                                                            margin: 0 auto 18px;
+                                                                                  display: grid;
+                                                                                        place-items: center;
+                                                                                              border: 1px solid #c5a56d;
+                                                                                                    border-radius: 50%;
+                                                                                                          color: #c5a56d;
+                                                                                                                font-size: 35px;
+                                                                                                                      background: #101711;
+                                                                                                                          }
+                                                                                                                          
+                                                                                                                              #sa-account-username {
+                                                                                                                                    font-family: Cinzel, Georgia, serif;
+                                                                                                                                          color: #e8e2cf;
+                                                                                                                                                margin: 8px 0;
+                                                                                                                                                      overflow-wrap: anywhere;
+                                                                                                                                                          }
+                                                                                                                                                          
+                                                                                                                                                              .sa-account-divider {
+                                                                                                                                                                    height: 1px;
+                                                                                                                                                                          background: #394638;
+                                                                                                                                                                                margin: 24px 0;
+                                                                                                                                                                                    }
+                                                                                                                                                                                    
+                                                                                                                                                                                        .sa-account-button {
+                                                                                                                                                                                              display: block;
+                                                                                                                                                                                                    width: 100%;
+                                                                                                                                                                                                          padding: 14px;
+                                                                                                                                                                                                                margin-top: 12px;
+                                                                                                                                                                                                                      border: 1px solid #c5a56d;
+                                                                                                                                                                                                                            border-radius: 5px;
+                                                                                                                                                                                                                                  background: #c5a56d;
+                                                                                                                                                                                                                                        color: #101711;
+                                                                                                                                                                                                                                              font-weight: 800;
+                                                                                                                                                                                                                                                    letter-spacing: 1.5px;
+                                                                                                                                                                                                                                                          font-size: 11px;
+                                                                                                                                                                                                                                                                cursor: pointer;
+                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                        .sa-account-button.secondary {
+                                                                                                                                                                                                                                                                              background: transparent;
+                                                                                                                                                                                                                                                                                    color: #c5a56d;
+                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                            .sa-account-input {
+                                                                                                                                                                                                                                                                                                  width: 100%;
+                                                                                                                                                                                                                                                                                                        padding: 14px;
+                                                                                                                                                                                                                                                                                                              margin: 10px 0;
+                                                                                                                                                                                                                                                                                                                    border: 1px solid #394638;
+                                                                                                                                                                                                                                                                                                                          border-radius: 5px;
+                                                                                                                                                                                                                                                                                                                                background: #101711;
+                                                                                                                                                                                                                                                                                                                                      color: #e8e2cf;
+                                                                                                                                                                                                                                                                                                                                            font-size: 14px;
+                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                    #sa-account-message {
+                                                                                                                                                                                                                                                                                                                                                          color: #c5a56d;
+                                                                                                                                                                                                                                                                                                                                                                font-size: 12px;
+                                                                                                                                                                                                                                                                                                                                                                      margin-top: 15px;
+                                                                                                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                                                              .sa-account-info {
+                                                                                                                                                                                                                                                                                                                                                                                    max-width: 520px;
+                                                                                                                                                                                                                                                                                                                                                                                          margin: 20px auto;
+                                                                                                                                                                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                  @media(max-width:380px) {
+                                                                                                                                                                                                                                                                                                                                                                                                        .nav-item { font-size: 8px; }
+                                                                                                                                                                                                                                                                                                                                                                                                              .nav-item span { font-size: 17px; }
+                                                                                                                                                                                                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                                                                                                                                                                                    `;
+    document.head.appendChild(style);
+
+   // Navigation
+   navButton.addEventListener("click", () => {
+         showPage("sa-account-page");
+         refreshAccount();
+   });
+
+   const guestBox = document.getElementById("sa-account-guest");
+    const memberBox = document.getElementById("sa-account-member");
+    const usernameDisplay = document.getElementById("sa-account-username");
+    const emailDisplay = document.getElementById("sa-account-email");
+    const usernameInput = document.getElementById("sa-edit-username");
+    const message = document.getElementById("sa-account-message");
+
+   let currentProfileUsername = "";
+
+   async function refreshAccount() {
+         const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+              window.saCurrentUser = null;
+              guestBox.hidden = false;
+              memberBox.hidden = true;
+              usernameDisplay.textContent = "GUEST";
+              emailDisplay.textContent = "Exploring as a guest";
+              return;
+      }
+
+      const user = data.user;
+         window.saCurrentUser = user;
+
+      const { data: profile } = await supabase
+           .from("profiles")
+           .select("username")
+           .eq("id", user.id)
+           .maybeSingle();
+
+      currentProfileUsername =
+              profile?.username || user.user_metadata?.username || "";
+
+      usernameDisplay.textContent =
+              currentProfileUsername || "ARCHIVE MEMBER";
+
+      emailDisplay.textContent = user.email || "";
+
+      usernameInput.value = currentProfileUsername;
+
+      guestBox.hidden = true;
+         memberBox.hidden = false;
+   }
+
+   // Account login and signup
+   async function openAuth(mode) {
+         const email = prompt("Enter your email address:");
+         if (!email) return;
+
+      const pr userna)   rorU0tsb derso;  {ror   aea.r,d nsdat {uena 
+                                            ;
+                                                                 if ) er; on)ofimat . }
+                                             ste: }awsuas(fs) .uu eida.ser.)
+          ifeEr o
+        ele
+      trawasups.ithPw{
+           iai
+           pod        });
+
+
+ mss.ne=ETAHV"  awi rehcuctr een r.
+} 
+  dBy"n).nck enul"; m.eEeB(aotsip.adLel" )openA("; tun otenById("sa-save-u   onernm senaIale.r)  [z2$tstae oe="n a(aes e  
+                                                                                                                   
+                                                                                                                   n bse teu nr  ubse fo(r .era)  "r
+ or{  meoet rege  r;    tusat.ds
+       t{ user;
+           .A DSUY wehcon ;
+         /  dutglmtBdac-gu"
+         .dntLs"c" async () =uth.sig  reg
+          ; }
+     dwtrnul
+     egtot SOEUa scu; }; recon();
+)
