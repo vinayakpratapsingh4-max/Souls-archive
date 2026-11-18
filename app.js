@@ -2705,3 +2705,18 @@ openGame = function(id) {
 
 console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
 
+/* ===== PASSWORD VISIBILITY ===== */
+
+(() => {
+  const password = document.getElementById("sa-auth-password");
+  const toggle = document.getElementById("sa-toggle-password");
+
+  if (!password || !toggle) return;
+
+  toggle.addEventListener("click", () => {
+    const isHidden = password.type === "password";
+
+    password.type = isHidden ? "text" : "password";
+    toggle.textContent = isHidden ? "HIDE" : "SHOW";
+  });
+})();
