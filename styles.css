@@ -2358,9 +2358,17 @@ a:active {
 }
 
 .sa-password-wrap input {
+  display: block;
   width: 100%;
   padding-right: 75px !important;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+#sa-toggle-password {
+  z-index: 3;
 }
 
 #sa-toggle-password {
