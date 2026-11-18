@@ -2352,3 +2352,31 @@ a:active {
     margin-top: 12px;
   }
 }
+.sa-password-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.sa-password-wrap input {
+  width: 100%;
+  padding-right: 75px !important;
+  box-sizing: border-box;
+}
+
+#sa-toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #b99a65;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+#sa-toggle-password:hover {
+  color: #fff;
+}
