@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://5853afe3.souls-info.pages.dev/sitemap.xml
