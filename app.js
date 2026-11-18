@@ -2721,3 +2721,126 @@ console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
     toggle.textContent = isHidden ? "HIDE" : "SHOW";
   });
 })();
+
+/* ===== SOULS.ARCHIVE INSTANT AUTH OVERRIDE ===== */
+
+(() => {
+    const form = document.getElementById("sa-auth-form");
+    const username = document.getElementById("sa-auth-username");
+    const email = document.getElementById("sa-auth-email");
+    const password = document.getElementById("sa-auth-password");
+    const message = document.getElementById("sa-auth-message");
+    const submit = document.getElementById("sa-auth-submit");
+    const title = document.getElementById("sa-auth-title");
+
+   const loginBtn = document.getElementById("sa-show-login");
+    const signupBtn = document.getElementById("sa-show-signup");
+
+   if (!form || !email || !password || !message || !submit) {
+         console.error("SOULS.ARCHIVE auth elements missing.");
+         return;
+   }
+
+   let mode = "login";
+
+   loginBtn?.addEventListener("click", () => {
+         mode = "login";
+         if (username) {
+                 username.hidden = true;
+                 username.required = false;
+         }
+   });
+
+   signupBtn?.addEventListener("click", () => {
+         mode = "signup";
+         if (username) {
+                 username.hidden = false;
+                 username.required = true;
+         }
+   });
+
+   function enterArchive() {
+         const intro = document.getElementById("intro-screen");
+         if (intro) {
+                 intro.classList.add("intro-exit");
+                 setTimeout(() => intro.remove(), 1800);
+         }
+   }
+
+   document.addEventListener("submit", async (event) => {
+         if (event.target !== form) return;
+
+                                 event.preventDefault();
+         event.stopImmediatePropagation();
+
+                                 const client = window.supabaseClient;
+
+                                 if (!client) {
+                                         message.textContent = "Connection unavailable. Refresh and try again.";
+                                         return;
+                                 }
+
+                                 const userEmail = email.value.trim();
+         const userPassword = password.value;
+         const chosenUsername = username?.value.trim() || "";
+
+                                 if (mode === "signup") {
+                                         if (!/^[A-Za-z0-9_]{3,20}$/.test(chosenUsername)) {
+                                                   message.textContent =
+                                                               "Username must be 3–20 characters (letters, numbers or _).";
+                                                   return;
+                                         }
+                                 }
+
+                                 submit.disabled = true;
+         message.textContent = "PLEASE WAIT...";
+
+                                 try {
+                                         let result;
+
+           if (mode === "signup") {
+                     result = await client.auth.signUp({
+                                 email: userEmail,
+                                 password: userPassword,
+                                 options: {
+                                               data: { username: chosenUsername }
+                                 }
+                     });
+           } else {
+                     result = await client.auth.signInWithPassword({
+                                 email: userEmail,
+                                 password: userPassword
+                     });
+           }
+
+           if (result.error) throw result.error;
+
+           if (!result.data.session) {
+                     throw new Error("No login session received. Check email confirmation settings.");
+           }
+
+           window.saCurrentUser = result.data.user;
+
+           if (mode === "signup") {
+                     const { error: profileError } = await client
+                       .from("profiles")
+                       .update({ username: chosenUsername })
+                       .eq("id", result.data.user.id);
+
+                                           if (profileError) {
+                                                       console.error("Profile username save failed:", profileError);
+                                                       throw new Error("Account created, but username could not be saved: " + profileError.message);
+                                           }
+           }
+
+           message.textContent = "WELCOME TO SOULS.ARCHIVE";
+                                         enterArchive();
+
+                                 } catch (error) {
+                                         console.error("SOULS.ARCHIVE auth error:", error);
+                                         message.textContent = error.message || "Something went wrong.";
+                                 } finally {
+                                         submit.disabled = false;
+                                 }
+   }, true);
+})();
