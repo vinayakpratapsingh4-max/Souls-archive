@@ -2388,3 +2388,125 @@ a:active {
 #sa-toggle-password:hover {
   color: #fff;
 }
+/* ===== SOULS.ARCHIVE — ACCOUNT REDESIGN ===== */
+
+#sa-account-page .sa-account-card {
+  max-width: 480px;
+  margin: 24px auto;
+  padding: 30px 22px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at top, rgba(197,165,109,.12), transparent 65%),
+    linear-gradient(145deg, #202a20, #111711);
+  border: 1px solid rgba(197,165,109,.35);
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.3);
+}
+
+#sa-account-page .sa-account-card h2 {
+  margin: 15px 0 6px;
+  font: 700 23px Cinzel, Georgia, serif;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  overflow-wrap: anywhere;
+}
+
+#sa-account-page .sa-account-card .subtle {
+  margin-bottom: 24px;
+  font-size: 12px;
+  color: #aaa895;
+}
+
+#sa-account-page .sa-account-card > div:first-child {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: linear-gradient(145deg, #344b35, #101711);
+  color: var(--gold) !important;
+  font: 700 32px Cinzel, Georgia, serif !important;
+  box-shadow: 0 0 22px rgba(197,165,109,.16);
+}
+
+#sa-account-page #sa-account-guest,
+#sa-account-page #sa-account-member {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+#sa-account-page #sa-account-guest[hidden],
+#sa-account-page #sa-account-member[hidden] {
+  display: none !important;
+}
+
+#sa-account-page .sa-account-card .gold-button {
+  width: 100%;
+  min-height: 46px;
+  justify-content: center;
+  margin: 0;
+  border: 1px solid var(--gold-dark);
+  border-radius: 8px;
+  background: linear-gradient(110deg, #c5a56d, #a98a53);
+  color: #15140f;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+#sa-account-page #sa-account-signup {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(197,165,109,.5);
+}
+
+#sa-account-page #sa-account-edit {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  outline: none;
+  background: #101711;
+  color: var(--text);
+  font: 14px Inter, sans-serif;
+}
+
+#sa-account-page #sa-account-edit:focus {
+  border-color: var(--gold);
+}
+
+#sa-account-page #sa-account-status {
+  color: var(--gold);
+  font-size: 11px;
+  margin-top: 18px;
+  overflow-wrap: anywhere;
+}
+/* ===== ACCOUNT INITIAL AVATAR ===== */
+
+(() => {
+  const name = document.getElementById("sa-account-name");
+  const avatar = document.querySelector(
+    "#sa-account-page .sa-account-card > div:first-child"
+  );
+
+  if (!name || !avatar) return;
+
+  function updateAvatar() {
+    const username = name.textContent.trim();
+    avatar.textContent = username.charAt(0).toUpperCase() || "G";
+    avatar.setAttribute("aria-label", username + " profile avatar");
+  }
+
+  updateAvatar();
+
+  new MutationObserver(updateAvatar).observe(name, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+})();
