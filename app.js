@@ -2709,6 +2709,7 @@ console.log("SOULS.ARCHIVE — PLAYSTATION TROPHY TRACKER READY");
 
 (() => {
   const password = document.getElementById("sa-auth-password");
+  const username = document.getElementById("sa-auth-username");
   const toggle = document.getElementById("sa-toggle-password");
 
   if (!password || !toggle) return;
