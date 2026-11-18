@@ -2368,23 +2368,23 @@ a:active {
 }
 
 #sa-toggle-password {
-  z-index: 3;
-}
-
-#sa-toggle-password {
-  position: absolute;
+  position: absolute !important;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  background: transparent;
-  border: none;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
   color: #b99a65;
   font-size: 11px;
   letter-spacing: 1px;
   cursor: pointer;
-  padding: 8px;
+  z-index: 3;
 }
-
 #sa-toggle-password:hover {
   color: #fff;
 }
