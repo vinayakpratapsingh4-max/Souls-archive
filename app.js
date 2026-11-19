@@ -595,7 +595,7 @@ async function loadGameScreenshots(id) {
   box.innerHTML = "<p class='subtle'>Loading screenshots...</p>";
 
   try {
-    const response = await fetch(`/api/steam/${appid}`);
+    const response = await fetch(`https://souls-info.pages.dev/api/steam/${appid}`);
     if (!response.ok) throw new Error("API request failed");
 
     const data = await response.json();
